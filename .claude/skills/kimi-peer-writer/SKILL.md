@@ -631,12 +631,16 @@ adapter = os.path.expanduser('~/IWE/${IWE_GOVERNANCE_REPO:-DS-strategy}/scripts/
 
 try:
     with open(tmp_path, 'r', encoding='utf-8') as stdin_f, open(report_file, 'w', encoding='utf-8') as stdout_f:
-        result = subprocess.run(
-            ['bash', adapter, '--add-dir', session_dir],
-            stdin=stdin_f,
-            stdout=stdout_f,
-            stderr=subprocess.DEVNULL
-        )
+        try:
+            result = subprocess.run(
+                ['bash', adapter, '--add-dir', session_dir],
+                stdin=stdin_f,
+                stdout=stdout_f,
+                stderr=subprocess.DEVNULL,
+                timeout=180
+            )
+        except subprocess.TimeoutExpired:
+            result = subprocess.CompletedProcess(args=[], returncode=1)
 finally:
     os.unlink(tmp_path)
 
@@ -646,7 +650,7 @@ if result.returncode != 0 or os.path.getsize(report_file) == 0:
         f.write(f"""---
 session_id: {session_id}
 generated_at: {now}
-note: синтез не выполнен (Claude недоступен или вернул пустой результат)
+note: синтез не выполнен (Claude недоступен, вернул пустой результат, или таймаут >180с)
 ---
 
 # Итоговый отчёт
