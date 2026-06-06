@@ -832,7 +832,7 @@ Commit: `84dd6dc`
 - **`/iwe-bug-report` скилл** — создаёт GitHub issue в FMT-exocortex-template через `gh issue create` (6 шагов: категоризация → детали → gh CLI check → issue → URL).
 - **`docs/onboarding/iwe-layers.md`** — онбординг-схема слоёв L1/L2/L3.
 - **`.stignore` по умолчанию** — шаблон добавлен в корень FMT (`717d2d8`). При `update.sh` пользователь получает рабочий `.stignore` для Syncthing (исключены `.git/`, `node_modules/`, `.venv/`, `*.pyc` и другие build-артефакты). Фидбек пилота Дмитрия, 27 апр.
-- **`day-close` шаг 10b rule-classifier** — добавлен шаг `python3 $HOME/IWE/.claude/scripts/rule-classifier.py` после коммита в SKILL.md day-close (WP-272 Ф5.2, `0e41292`). Обогащает журнал `~/logs/rule-engine/YYYY-MM-DD-classified.jsonl`. Exit-код игнорируется (идемпотентно); убивать через 60 сек если зависает.
+- **`day-close` шаг 10b rule-classifier** — добавлен шаг `python3 $HOME/IWE/.claude/scripts/rule-classifier.py` после коммита в SKILL.md day-close (WP-272 Ф5.2, `0e41292`). Обогащает журнал `~/logs/rule-engine/YYYY-MM-DD-classified.jsonl`. Exit-код игнорируется (идемпотентно); убивать через 60 сек если зависает. ⚠️ **Требует ручной установки:** скрипт не поставляется в шаблоне — нужен `claude` CLI + репо `PACK-agent-rules` (см. #158).
 
 ## [0.29.10] — 2026-04-28
 
