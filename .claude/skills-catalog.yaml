@@ -2,7 +2,7 @@
 # see DP.SC.153
 # НЕ редактировать вручную — перегенерировать через generate-skills-catalog.sh
 #
-generated: 2026-06-04T14:08:14Z
+generated: 2026-06-08T06:52:09Z
 skills_dir: .claude/skills
 
 skills:
@@ -149,9 +149,9 @@ skills:
     - decompose
   - id: diagnose-iwe
     name: "diagnose-iwe"
-    description: "Диагностика ступени мастерства (Диагност R28, FORM.089 §6.1) прямо в VS Code / claude.ai. До 5 вопросов, ~5 мин. Сохраняет cp-профиль в цифровой двойник (browser) или Neon (VS Code). Запускай когда: пилот говорит «пройди диагностику», «какая моя ступень», «/diagnose-iwe» — или ПРОАКТИВНО когда видишь пустой cp_profile или нового пользователя без данных."
+    description: "Диагностика ступени мастерства (Диагност R28, FORM.089 §6.1) прямо в VS Code / claude.ai. До 7 вопросов, ~7 мин. Сохраняет cp-профиль в цифровой двойник (browser) или Neon (VS Code). Запускай когда: пилот говорит «пройди диагностику», «какая моя ступень», «/diagnose-iwe» — или ПРОАКТИВНО когда видишь пустой cp_profile или нового пользователя без данных."
     version: 1.0.0
-    layer: L3
+    layer: L1
     status: active
     triggers:
       slash:
@@ -160,6 +160,19 @@ skills:
     invoked_by:
     - diagnose-iwe
     - pack-creator
+  - id: discovery-session
+    name: "discovery-session"
+    description: "Разговор-распаковка неудовлетворённостей (discovery-стратегирование). Сократический разбор сырой рефлексии и заметок на триаду Проблема/Неудовлетворённость/Эмоция → состояние пилота → приоритеты месяца (WHAT/WHY). Роль R1 Стратег, метод DP.METHOD.053. Триггеры — «разбери неудовлетворённости», «помоги со стратегией месяца», «что для меня сейчас важно», «/discovery-session»."
+    version: 1.0.0
+    layer: L1
+    status: active
+    triggers:
+      slash:
+        - /discovery-session
+    depends_on: []
+    invoked_by:
+    - discovery-session
+    - strategy-session
   - id: extend
     name: "extend"
     description: "Каталог расширяемости IWE: что можно настроить, какие extension points существуют, какие параметры доступны, как установить чужое расширение."
@@ -307,7 +320,7 @@ skills:
     name: "peer-conversation"
     description: "Многотуровый диалог писателя (Claude) с напарником (Kimi) по задаче пилота (DP.SC.154). Ведёт turn-loop, обнаруживает CONSENSUS/ESCALATE, после консенсуса — Decision Gate (зафиксировать vs реализовать → ревью → проверить → задеплоить), синтезирует report.md через Agent tool."
     version: 1.2.0
-    layer: L1
+    layer: L3
     status: active
     triggers:
       slash:
@@ -355,6 +368,18 @@ skills:
     depends_on: []
     invoked_by:
     - platform-bottleneck
+  - id: restore-exocortex
+    name: "restore-exocortex"
+    description: "Восстановление памяти IWE из exocortex-бэкапа на новом устройстве/после потери — NL-обёртка над restore-from-exocortex.sh."
+    version: 1.0.0
+    layer: L1
+    status: active
+    triggers:
+      slash:
+        - /restore-exocortex
+    depends_on: []
+    invoked_by:
+    - restore-exocortex
   - id: run-protocol
     name: "run-protocol"
     description: "Пошаговое выполнение протокола ОРЗ с обязательной отметкой каждого шага. Предотвращает пропуск шагов (включая верификацию)."
@@ -390,6 +415,7 @@ skills:
         - /strategy-session
     depends_on: []
     invoked_by:
+    - discovery-session
     - strategy-session
   - id: think
     name: "think"

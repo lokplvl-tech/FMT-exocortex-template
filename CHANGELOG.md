@@ -17,10 +17,18 @@ Versioning: [Semantic Versioning](https://semver.org/).
 
 
 
-## [Unreleased] — обновлено 2026-06-06
+
+## [Unreleased] — обновлено 2026-06-08
 
 ### Added
 
+- `321bab6` feat(distinctions): Gateway с одной ответственностью ≠ Gateway с прикладной логикой
+- `a24f295` feat: memory sync hook + exocortex restore (closes #125)
+- `274e1cf` feat(catalogs): generate-catalogs.py + публичные каталоги скиллов/скриптов/ролей
+- `40db8e7` feat(WP-7-DAP1B): day-close --sessions + scaffold sessions-today integration
+- `d533a9e` feat(agents): self-check после peer-сессии — разговорный стиль (DP.SC.050)
+- `d3727f5` feat(peer): стиль report.md — разговорный для пилота (DP.SC.050)
+- `4eea41e` feat(WP-7): active-wp-sweep awaiting-batch + WeekPlan union + scaffold compact dashboard
 - `61c46f3` feat(peer): sync kimi-peer-adapter.sh v3 from DS-my-strategy (selective merge)
 - `42e015f` feat(WP-356): промоция артефактов Day Open pipeline (5 скриптов + 1 хук)
 - `e5c86a0` feat(WP-378): навык /discovery-session + распаковка strategy-session
@@ -65,6 +73,7 @@ Versioning: [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- `51f609d` docs(WP-349 Ф31): web-onboarding v2 — freemium, две оси, без триала
 - `ba4f5e6` docs(WP-349): Ф34 — онбординг-доки под канон двух осей
 - `6a634a8` chore: обновление promotion-status (peer-conversation skill)
 - `8b683de` docs(readme): упрощена формулировка про другие агенты
@@ -83,6 +92,15 @@ Versioning: [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- `1d65a90` fix(cross-platform): Ф-25 WP-5 — три дефекта Windows/Linux совместимости
+- `38fd6b0` fix(strategist): WP-5 Ф-27 — два бага в notify-шаблоне дайджеста
+- `1a6a1be` fix(update): protect personal L4 config day-rhythm-config.yaml from clobber
+- `be4a84c` fix: batch fix for issues #161 #162 #35 #57 #17 + pipeline improvement
+- `20f0afa` fix(checks): anchored grep ^status: prevents false-positive from report body text
+- `b2c42ea` fix(template): replace DS-my-strategy with {{GOVERNANCE_REPO}} in peer-conversation SKILL.md
+- `1392b9b` fix(day-close): step 1c → 1b + исправить skip-сообщение check-index-health
+- `b24c91e` fix(peer): PPID fallback + idle/peer-session status guards в kimi-peer-adapter.sh
+- `ac4e3af` fix(#160,#159,#158): security gate B7.3 + day-close after hook + missing scripts
 - `6fd9e77` fix(peer): pidfile fallback uses PPID, remove orphan cleanup
 - `a85cf57` fix(fmt7): pre-commit валидирует только staged-скрипты (#150 collateral)
 - `efadfa0` fix(fmt): триаж 4 issues + сигнальный канал Day Open
