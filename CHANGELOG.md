@@ -24,10 +24,13 @@ Versioning: [Semantic Versioning](https://semver.org/).
 
 
 
+
+
 ## [Unreleased] — обновлено 2026-06-14
 
 ### Added
 
+- `83434ea` feat: promote pull-on-touch.sh — детерминированный Pull-on-Touch (CLAUDE.md §2 п.5)
 - `1f0eba6` feat(linux): cross-platform portability — env-bootstrap + systemd + OS-aware (clean integration of #179/#181)
 - `6ef52a7` feat(hooks): destructive-guard + check-trash (focused, extracted from #176)
 - `213065e` feat(day-open): smoke-tests integration — шаг 5 SKILL больше не PENDING (bug-2026-06-12)
@@ -90,7 +93,6 @@ Versioning: [Semantic Versioning](https://semver.org/).
 - `43e8268` feat(WP-377): promote pack-creator + org-dev + spf-guard
 - `f47bf49` feat(WP-348): promote apply-captures defer_until invariant to L1
 - `bc5686f` feat(L1): B-005 reliability обхода Backlog и pending-фаз
-- `fbc5585` feat(L1): promote DP.D.052 v2 формулировок из peer-сессии 2026-05-31-11
 
 ### Changed
 
