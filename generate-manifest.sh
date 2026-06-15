@@ -24,7 +24,6 @@ SKIP_PATTERNS=(
     ".DS_Store"
     "generate-manifest.sh"
     "update-manifest.json"
-    "setup/"
     "seed/"
     "templates/"
 )
@@ -73,6 +72,12 @@ while IFS= read -r rel; do
     done
     [[ "$(basename "$rel")" == ".gitkeep" ]] && skip=true
     $skip && continue
+
+    # setup/ contains install-time scripts; skip all except validate-template.sh,
+    # which is referenced by .githooks/pre-commit and update.sh after delivery.
+    if [[ "$rel" == setup/* && "$rel" != "setup/validate-template.sh" ]]; then
+        continue
+    fi
 
     # Проверяем excluded_paths (dev-only)
     is_excluded=false

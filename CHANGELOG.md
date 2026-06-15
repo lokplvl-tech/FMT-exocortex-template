@@ -201,6 +201,12 @@ Versioning: [Semantic Versioning](https://semver.org/).
 - `bffd92c` fix(skill): quote pack-new description in SKILL.md frontmatter (#137)
 
 
+## [0.35.4] — 2026-06-15
+
+### Fixed
+
+- fix(WP-7): FMT delivery blockers от реального pilot update — доставка `setup/validate-template.sh` через `update-manifest.json`, hard-fail `update.sh` при неразрешённых конфликтах `CLAUDE.md`, coverage `scripts/tests/test_skill_promote.py` в манифесте.
+
 ## [0.35.3] — 2026-06-01
 
 ### Added

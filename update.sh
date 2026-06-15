@@ -130,6 +130,7 @@ NEW_DESCS=()
 UPDATED_FILES=()
 UPDATED_LINES=()
 UNCHANGED=0
+CLAUDE_CONFLICTS=0  # unresolved CLAUDE.md merge conflict counter (WP-7)
 
 # Count total files for progress display
 TOTAL_FILES=$(python3 -c "
@@ -338,6 +339,7 @@ for f in "${UPDATED_FILES[@]}"; do
                     # Conflicts detected — save merged file with markers
                     cp "$TMPDIR_UPDATE/claude-merged.md" "$CURRENT_FILE"
                     cp "$NEW_FILE" "$BASE_FILE"
+                    CLAUDE_CONFLICTS=$((CLAUDE_CONFLICTS + CONFLICT_COUNT))
                     echo "  ~ $f (3-way merge, $CONFLICT_COUNT конфликтов — разрешите вручную)"
                     echo "    Конфликты обозначены <<<<<<< / ======= / >>>>>>>"
                 else
@@ -369,6 +371,15 @@ for f in "${UPDATED_FILES[@]}"; do
     fi
     APPLIED=$((APPLIED + 1))
 done
+
+# Hard-fail if CLAUDE.md still has conflict markers — skip propagation and commit.
+if [ "$CLAUDE_CONFLICTS" -gt 0 ]; then
+    echo ""
+    echo "ОШИБКА: CLAUDE.md содержит неразрешённые конфликты слияния."
+    echo "  Конфликты обозначены <<<<<<< / ======= / >>>>>>>"
+    echo "  Разрешите их вручную в $SCRIPT_DIR/CLAUDE.md и перезапустите update.sh."
+    exit 1
+fi
 
 # Remove deprecated files
 for i in "${!DEPRECATED_FOUND[@]}"; do
@@ -594,8 +605,14 @@ for f in "${NEW_FILES[@]}" "${UPDATED_FILES[@]}"; do
                 WS_CONFLICTS=$(grep -c '^<<<<<<<' "$TMPDIR_UPDATE/ws-claude-merged.md" 2>/dev/null || true); WS_CONFLICTS=${WS_CONFLICTS:-0}
                 cp "$TMPDIR_UPDATE/ws-claude-merged.md" "$WS_CURRENT"
                 cp "$WS_NEW" "$WS_BASE"
+                CLAUDE_CONFLICTS=$((CLAUDE_CONFLICTS + WS_CONFLICTS))
                 if [ "$WS_CONFLICTS" -gt 0 ]; then
-                    echo "  ✓ $WS_CURRENT обновлён (3-way merge, $WS_CONFLICTS конфликтов)"
+                    echo "  ~ $WS_CURRENT ($WS_CONFLICTS конфликтов — разрешите вручную)"
+                    echo "    Конфликты обозначены <<<<<<< / ======= / >>>>>>>"
+                    echo ""
+                    echo "ОШИБКА: CLAUDE.md содержит неразрешённые конфликты слияния."
+                    echo "  Разрешите их вручную в $WS_CURRENT и перезапустите update.sh."
+                    exit 1
                 else
                     echo "  ✓ $WS_CURRENT обновлён (3-way merge)"
                 fi
