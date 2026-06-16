@@ -29,10 +29,12 @@ Versioning: [Semantic Versioning](https://semver.org/).
 
 
 
-## [Unreleased] — обновлено 2026-06-15
+
+## [Unreleased] — обновлено 2026-06-16
 
 ### Added
 
+- `7f19385` feat(skill): promote kimi-peer-writer fix — NameError peer_agent + deprecated utcnow
 - `5e21531` feat(WP-7/SP1): refactor skill-promote.sh — safety, validation, tests
 - `53cd985` feat(day-open): add ТВС labeling step to skill template (§6b2)
 - `36febfd` feat(strategy): модель ТВС в шаблон (стратегирование + ОРЗ)
@@ -40,11 +42,14 @@ Versioning: [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- `a512810` chore(day-close): commit dirty changes from 2026-06-15
 - `6c8a4cd` docs(WP-362 Ф8.1): developer/README — тиры T1-T4 → T0-T4 (консистентность с каноном)
 - `6fdb1b0` docs(WP-362): Ф8 — FMT/docs self-contained онбординг
 
 ### Fixed
 
+- `9bd0593` fix(update.sh): Windows SSL revocation flag detection via curl --help
+- `b1b45cd` fix(WP-7): strategist runner env fallback + diagnose-iwe YAML sync (#136 #122)
 - `a823c51` fix(WP-7): setup/validate-template.sh delivery, CLAUDE.md conflict hard-fail, manifest coverage
 - `8073146` fix(WP-7): FMT delivery — .claude/styles propagation, manifest sync, smoke Test 6e
 - `cb8a1a6` fix(COL-06): communication-style-base.md — L1 → S1 (авторский слой)

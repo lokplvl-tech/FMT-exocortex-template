@@ -2,7 +2,7 @@
 # see DP.SC.153
 # НЕ редактировать вручную — перегенерировать через generate-skills-catalog.sh
 #
-generated: 2026-06-15T11:23:38Z
+generated: 2026-06-16T08:31:36Z
 skills_dir: .claude/skills
 
 skills:
@@ -43,6 +43,18 @@ skills:
     - verify
     - bottleneck-pick
     - decompose
+  - id: artifactor
+    name: "artifactor"
+    description: "Classifies raw pilot request → structured JSON {task_type, class, artifact, budget_estimate, confidence, routing_tag, resolution_path}. Keyword-fast (<200ms) or Haiku fallback (<60s). Does NOT create WP or call executor."
+    version: 1.0.0
+    layer: L1
+    status: active
+    triggers:
+      slash:
+        - /artifactor
+    depends_on: []
+    invoked_by:
+    - artifactor
   - id: audit-docs
     name: "audit-docs"
     description: "Audit repository documentation: detect drift between code and docs, report coverage by category. Run manually or on triggered drift critical."
