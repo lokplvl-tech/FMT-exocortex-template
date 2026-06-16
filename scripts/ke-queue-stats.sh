@@ -38,7 +38,14 @@ if [ ! -d "$KE_DIR" ]; then
   exit 0
 fi
 
-PENDING_FILES=$(grep -rl "^status: pending-review" "$KE_DIR" 2>/dev/null)
+# Parse frontmatter only; support both legacy 'pending-review' and current 'pending'.
+# Body mentions like '# status: pending' must not be counted.
+PENDING_FILES=$(
+  for f in "$KE_DIR"/*.md; do
+    [ -f "$f" ] || continue
+    awk '/^---/{if(seen){exit} seen=1; next} seen && /^status:[[:space:]]*pending(-review)?$/{print FILENAME; exit}' "$f"
+  done
+)
 if [ -z "$PENDING_FILES" ]; then
   COUNT=0
 else
