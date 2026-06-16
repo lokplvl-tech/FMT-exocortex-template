@@ -2,7 +2,7 @@
 # see DP.SC.153
 # НЕ редактировать вручную — перегенерировать через generate-skills-catalog.sh
 #
-generated: 2026-06-16T08:31:36Z
+generated: 2026-06-16T09:16:19Z
 skills_dir: .claude/skills
 
 skills:
@@ -327,6 +327,7 @@ skills:
     depends_on: []
     invoked_by:
     - CLAUDE.md
+    - skill-creator
     - pack-creator
   - id: peer-conversation
     name: "peer-conversation"
@@ -416,6 +417,18 @@ skills:
     depends_on: []
     invoked_by:
     - setup-wakatime
+  - id: skill-creator
+    name: "skill-creator"
+    description: "|"
+    version: 0.2.0
+    layer: L1
+    status: experimental
+    triggers:
+      slash:
+        - slash:
+    depends_on: []
+    invoked_by:
+    - skill-creator
   - id: strategy-session
     name: "strategy-session"
     description: "Strategy session — dispatcher. Day 0 (no Strategy.md/WeekPlan) → initial flow (goals, dissatisfactions, first WeekPlan). Day 1+ → weekly flow (requires draft from session-prep). Triggers: 'run strategy session', 'first strategy session', 'strategy session', 'let's strategize'."
@@ -466,6 +479,7 @@ skills:
     - day-close
     - verify
     - kimi-peer-writer
+    - skill-creator
     - pack-creator
     - audit-docs
   - id: w-reflection
