@@ -31,26 +31,31 @@ Versioning: [Semantic Versioning](https://semver.org/).
 
 
 
+
 ## [Unreleased] — обновлено 2026-06-16
 
 ### Added
 
+- `760be7b` feat(skill-creator): promote to platform L1 (WP-422 Ф6)
 - `d6160b2` feat: promote skill artifactor from staging (L1)
 - `7f19385` feat(skill): promote kimi-peer-writer fix — NameError peer_agent + deprecated utcnow
 - `5e21531` feat(WP-7/SP1): refactor skill-promote.sh — safety, validation, tests
 - `53cd985` feat(day-open): add ТВС labeling step to skill template (§6b2)
 - `36febfd` feat(strategy): модель ТВС в шаблон (стратегирование + ОРЗ)
-- `673474d` feat(WP-388): проекция базы стиля — 4 новых элемента регистра (зеркало L0)
 
 ### Changed
 
 - `f820cb9` docs(local-llm): sync ADR-001 venv-Python note from author SoT (WP-404 Ф4)
 - `a512810` chore(day-close): commit dirty changes from 2026-06-15
-- `6c8a4cd` docs(WP-362 Ф8.1): developer/README — тиры T1-T4 → T0-T4 (консистентность с каноном)
-- `6fdb1b0` docs(WP-362): Ф8 — FMT/docs self-contained онбординг
 
 ### Fixed
 
+- `b653a38` fix(ke-queue-stats): frontmatter parser + support pending and pending-review statuses
+- `7c7151c` fix(ke-queue-stats): fix COUNT double-output bug and cross-platform stat
+- `c92d968` fix(promote): auto-regenerate update-manifest.json after hook/script promotion
+- `2d20f46` fix(manifest): close 3 gaps that let skill files bypass coverage check
+- `daeaa01` fix(manifest): exclude .backups/, add promoted skill files (artifactor + skill-creator)
+- `4d7c2f3` fix(skill-creator): remove /create-skill alias from triggers and description
 - `9bd0593` fix(update.sh): Windows SSL revocation flag detection via curl --help
 - `b1b45cd` fix(WP-7): strategist runner env fallback + diagnose-iwe YAML sync (#136 #122)
 - `a823c51` fix(WP-7): setup/validate-template.sh delivery, CLAUDE.md conflict hard-fail, manifest coverage
