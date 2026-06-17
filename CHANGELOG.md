@@ -34,10 +34,13 @@ Versioning: [Semantic Versioning](https://semver.org/).
 
 
 
+
+
 ## [Unreleased] — обновлено 2026-06-17
 
 ### Added
 
+- `157f483` feat(agent-trace): promote uploader+recorder hook fixes to platform
 - `8793f64` feat(skill-creator): add Step 2.5 update mode for existing skills (sync from IWE WP-422 Ф7)
 - `7468c0f` feat(skill): promote bottleneck-pick L3->L1, description+phrases
 - `760be7b` feat(skill-creator): promote to platform L1 (WP-422 Ф6)
@@ -48,7 +51,6 @@ Versioning: [Semantic Versioning](https://semver.org/).
 - `36febfd` feat(strategy): модель ТВС в шаблон (стратегирование + ОРЗ)
 - `673474d` feat(WP-388): проекция базы стиля — 4 новых элемента регистра (зеркало L0)
 - `dd117c5` feat(styles): WP-412 Ф11 — дисциплина языковых стилей в шаблон IWE
-- `83434ea` feat: promote pull-on-touch.sh — детерминированный Pull-on-Touch (CLAUDE.md §2 п.5)
 
 ### Changed
 

@@ -2,23 +2,25 @@
 # see DP.SC.153
 # НЕ редактировать вручную — перегенерировать через generate-skills-catalog.sh
 #
-generated: 2026-06-16T18:42:54Z
+generated: 2026-06-17T07:45:31Z
 skills_dir: .claude/skills
 
 skills:
   - id: agent-fault
     name: "agent-fault"
-    description: "Register an agent fault in the WP-316 tracking system (L1). No LLM — deterministic script."
-    version: 0.0.0
-    layer: unknown
+    description: "Регистрация косяка агента в системе учёта WP-316 L1. Без LLM — детерминированный скрипт без WP Gate."
+    version: 0.1.0
+    layer: L1
     status: active
     triggers:
-      slash: []
+      slash:
+        - /agent-fault
     depends_on: []
-    invoked_by: []
+    invoked_by:
+    - agent-fault
   - id: apply-captures
     name: "apply-captures"
-    description: "Process extraction reports with pending-review status — R15 decision (accept/reject/defer), write to Pack, update status, commit. Call during Close when N>0 pending-review reports exist."
+    description: "Разбор extraction-reports со status pending-review — решение R15 (accept/reject/defer), запись в Pack, обновление статуса, коммит. Вызывать при Close при наличии N>0 pending-review отчётов."
     version: 1.0.0
     layer: L1
     status: active
@@ -420,7 +422,7 @@ skills:
   - id: skill-creator
     name: "skill-creator"
     description: "|"
-    version: 0.2.0
+    version: 0.3.0
     layer: L1
     status: experimental
     triggers:
