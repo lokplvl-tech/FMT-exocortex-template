@@ -297,6 +297,12 @@
       "path": ".claude/skills/verify/verify-pedagogy-subsection.md"
     },
     {
+      "path": ".claude/skills/vdv/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/vdv/test_cases.md"
+    },
+    {
       "path": ".claude/skills/w-reflection/SKILL.md"
     },
     {

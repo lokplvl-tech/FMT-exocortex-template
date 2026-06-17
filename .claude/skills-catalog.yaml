@@ -2,7 +2,7 @@
 # see DP.SC.153
 # НЕ редактировать вручную — перегенерировать через generate-skills-catalog.sh
 #
-generated: 2026-06-17T07:55:38Z
+generated: 2026-06-17T13:19:04Z
 skills_dir: .claude/skills
 
 skills:
@@ -109,7 +109,7 @@ skills:
     - check-secret
   - id: consent
     name: "consent"
-    description: "Manage consent in learning.tracking_consent — opt-in / opt-out / status / revoke. Required for the stage_evaluator worker (WP-253 Block 2). GDPR-compliant."
+    description: "Управление consent в learning.tracking_consent — opt-in / opt-out / status / revoke. Обязательное условие для работы stage_evaluator worker (WP-253 Блок 2). GDPR-совместимо."
     version: 1.0.0
     layer: L1
     status: active
@@ -201,12 +201,13 @@ skills:
     - extend
   - id: fpf
     name: "fpf"
-    description: "Loads applicable principles for a task from the Pack → SPF → FPF hierarchy. Use when you need to find relevant first principles before making a decision."
-    version: 0.0.0
-    layer: unknown
+    description: "Загрузка применимых принципов для задачи из иерархии Pack → SPF → FPF. Используй когда нужно найти релевантные принципы перед принятием решения."
+    version: 1.0.0
+    layer: L1
     status: active
     triggers:
-      slash: []
+      slash:
+        - /fpf
     depends_on: []
     invoked_by:
     - CLAUDE.md
@@ -284,7 +285,7 @@ skills:
     invoked_by: []
   - id: lesson-close
     name: "lesson-close"
-    description: "Close a lesson opened with /lesson. Finalizes workbook/YYYY-MM-DD.md (frontmatter status, time metadata, duration), commits + pushes to the personal-guide repo. Triggers the closed delivery loop: push → GitHub webhook → sync_one_user_to_dt → Digital Twin updates in Neon. Use when pilot says 'close', 'done', 'finish', 'close lesson' — or after explicit task completion in /lesson."
+    description: "Закрыть занятие, открытое скиллом /lesson. Финализирует workbook/YYYY-MM-DD.md (frontmatter status, метаданные времени, длительность), делает commit + push в репо personal-guide. Триггерит замкнутый контур доставки — после push → GitHub webhook → bot oauth_server.py:/webhook/github/workbook → sync_one_user_to_dt → ЦД обновляется в Neon. Используй когда пилот говорит «закрываем», «всё», «закончили», «закрой урок» — или после явного завершения задания в /lesson."
     version: 1.0.0
     layer: L1
     status: active
@@ -386,9 +387,9 @@ skills:
     - personal-guide-render
   - id: platform-bottleneck
     name: "platform-bottleneck"
-    description: "Alias for /bottleneck-pick --layer platform. Deprecated — use /bottleneck-pick directly."
+    description: "Скилл IWE — см. тело файла"
     version: 1.0.0
-    layer: L3
+    layer: L1
     status: active
     triggers:
       slash:
@@ -479,6 +480,21 @@ skills:
     depends_on: []
     invoked_by:
     - transcribe
+  - id: vdv
+    name: "vdv"
+    description: "ВДВ-скилл — генератор и аудитор описания стадийного процесса по 6 принципам Вход·Действие·Выход. Используй для построения описания нового процесса (/vdv build) или проверки готового описания (/vdv audit)."
+    version: 1.0.0
+    layer: L1
+    status: active
+    triggers:
+      slash:
+        - /vdv
+        - /vdv build
+        - /vdv audit
+    depends_on: []
+    invoked_by:
+    - vdv
+    - skill-creator
   - id: verify
     name: "verify"
     description: "Verify an artifact against a Pack standard. Loads VR.R.001 (Verifier) role with context isolation — checks the result, not the creation process."
@@ -499,7 +515,7 @@ skills:
     - audit-docs
   - id: w-reflection
     name: "w-reflection"
-    description: "Record a W-reflection (worldview slot of RCS) in learning.w_reflections. Used by Diagnostician R28 (MIM.R.009) or called by the user after a reflective session. Affects the D→P gate (FORM.089 §5.2)."
+    description: "Записать W-рефлексию (мировоззренческий слот RCS) в learning.w_reflections. Используется Диагностом R28 (MIM.R.009) или вызывается пользователем после рефлексивной сессии. Влияет на gate Д→П (FORM.089 §5.2)."
     version: 1.0.0
     layer: L1
     status: active

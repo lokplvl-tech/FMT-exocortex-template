@@ -40,6 +40,13 @@ Versioning: [Semantic Versioning](https://semver.org/).
 
 
 
+
+
+
+
+
+
+
 ## [Unreleased] — обновлено 2026-06-17
 
 ### Added
@@ -68,6 +75,7 @@ Versioning: [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- `850c303` fix(wp-7/wpn1): promote create-wp.sh with GOV_REPO parametrization
 - `0f92b40` fix(skill-creator): SKILL.md v0.3.1 — review fixes Critical+High
 - `b653a38` fix(ke-queue-stats): frontmatter parser + support pending and pending-review statuses
 - `7c7151c` fix(ke-queue-stats): fix COUNT double-output bug and cross-platform stat
