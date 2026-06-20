@@ -50,6 +50,13 @@ echo ""
 
 # ── helpers ──────────────────────────────────────────────────────────────────
 
+# Cross-platform sed -i (macOS requires empty string argument, GNU does not)
+if sed --version >/dev/null 2>&1; then
+    sed_inplace() { sed -i "$@"; }
+else
+    sed_inplace() { sed -i '' "$@"; }
+fi
+
 # Откат при ошибке
 rollback() {
     local backup_path="${1:-}"
@@ -140,6 +147,21 @@ find "$DEST" -type f \( \
 
 # ── Шаг 5. Подстановки путей + layer: L1 ─────────────────────────────────────
 substitute_file "$DEST/SKILL.md"
+
+# -- Blank USER-SPACE block content on promote (keep markers, clear inner content)
+if grep -q '^<!-- USER-SPACE -->' "$DEST/SKILL.md" 2>/dev/null; then
+    perl -i -0pe 's/^(<!-- USER-SPACE -->)\n.*?\n(<!-- \/USER-SPACE -->)/$1\n$2/ms' "$DEST/SKILL.md"
+fi
+# -- Replace install_constants actual values with {{KEY}} placeholders
+IC_BLOCK=$(awk '/^install_constants:/{found=1} found && /^[a-z][^:]+:/ && !/^install_constants:/{exit} found{print}' "$DEST/SKILL.md" 2>/dev/null || true)
+if [ -n "$IC_BLOCK" ]; then
+    while IFS=': ' read -r key val; do
+        key="${key#"${key%%[! ]*}"}"
+        val="${val#"${val%%[! ]*}"}"
+        [[ "$key" =~ ^[A-Z_]+$ ]] && [ -n "$val" ] || continue
+        sed_inplace "s|${val}|{{${key}}}|g" "$DEST/SKILL.md"
+    done <<< "$IC_BLOCK"
+fi
 
 # Подстановки в .sh скрипты скилла (рекурсивно)
 while IFS= read -r -d '' f; do

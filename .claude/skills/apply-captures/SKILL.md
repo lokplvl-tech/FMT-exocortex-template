@@ -231,3 +231,6 @@ git add <target_path> [MAP если был] && git commit -m "feat(KE apply): <i
 2. Day Open → секция «Наработки ИИ → Экстрактор» в DayPlan показывает N ожидающих
 3. Close → `protocol-close.checks.md` напоминает о SLA
 4. Пользователь запускает `/apply-captures` в отдельной сессии → R15 разбор → запись в Pack
+
+<!-- USER-SPACE -->
+<!-- /USER-SPACE -->

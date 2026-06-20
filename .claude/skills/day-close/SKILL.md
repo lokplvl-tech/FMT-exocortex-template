@@ -296,3 +296,6 @@ python3 $HOME/IWE/.claude/scripts/rule-classifier.py
 - [ ] Новое репо → MAPSTRATEGIC.md + Strategy.md
 
 Все ✅ → «День закрыт.» Иначе — указать что осталось.
+
+<!-- USER-SPACE -->
+<!-- /USER-SPACE -->

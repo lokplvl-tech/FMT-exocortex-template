@@ -815,3 +815,6 @@ git push
 «проверь отчёт сессии `<session_id>`»
 
 Запустить субагент (Sonnet, context isolation): прочитать все файлы сессии + report.md, сверить с инвариантами schema_version=1 (frontmatter, §4 непустой при agreed, verify-якоря).
+
+<!-- USER-SPACE -->
+<!-- /USER-SPACE -->
