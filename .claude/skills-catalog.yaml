@@ -169,13 +169,12 @@ skills:
     - decompose
   - id: diagnose
     name: "diagnose"
-    description: "Диагностика ступени мастерства (Диагност R28, FORM.089 §6.1 v5.0) прямо в VS Code / claude.ai. До 6 вопросов, ~3 мин. Сохраняет cp-профиль в цифровой двойник (browser) или Neon (VS Code). Запускай когда: пилот говорит «пройди диагностику», «какая моя ступень», «/diagnose», «/diagnose» — или ПРОАКТИВНО когда видишь пустой cp_profile или нового пользователя без данных."
+    description: "Диагностика ступени мастерства (Диагност R28, FORM.089 §6.1 v5.0) прямо в VS Code / claude.ai. До 6 вопросов, ~3 мин. Сохраняет cp-профиль в цифровой двойник (browser) или Neon (VS Code). Запускай когда: пилот говорит «пройди диагностику», «какая моя ступень», «/diagnose» — или ПРОАКТИВНО когда видишь пустой cp_profile или нового пользователя без данных."
     version: 5.0.0
     layer: L1
     status: active
     triggers:
       slash:
-        - /diagnose
         - /diagnose
     depends_on: []
     invoked_by:
