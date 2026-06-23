@@ -6,32 +6,144 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [Semantic Versioning](https://semver.org/).
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## [Unreleased] — обновлено 2026-06-23
 
 ### Added
 
+- `55851f9` feat(day-open): станок самодостаточен без bootstrap (ре-промоция)
+- `affae73` feat(day-open): промоция ТВС-структуры скаффолда + дефолт IWE
+- `ae5e638` feat(translation): add translate.py pipeline + en-doc-style.md
+- `0f54175` feat(wp-432): USER-SPACE customization zones in L1 skills
+- `49443ad` feat(wp-149): promote lesson-close SKILL.md to platform (L1) — lesson/ path
+- `25056ef` feat(WP-5): iwe-bug-report executor→agent + update.sh Step 6f orphan detection
+- `1593f13` feat(WP-295): promote rule-engine.sh + generate-rules-registry.py to platform
+- `3a17360` feat(diagnose): promote diagnose-iwe v5.0 to platform (L1)
+- `3491420` feat(day-close): ask pilot for tomorrow priorities and update priorities.yaml
+- `1651574` feat(skills): promote 6 top skills to FMT with advisory fixes (WP-422)
+- `bcdb0ed` feat(skills): promote skill-creator v0.3.2 + C6 audit + pg-start Verification
+- `326c460` feat(WP-422): promote 7 skills with C3-fixed step headings (L1)
+- `d2dd196` feat(WP-422/SP1): promote skill iwe-restore to platform (L1)
+- `a3ecd21` feat(skills): promote agent-fault + apply-captures to L1 (WP-422 Ф7 audit)
+- `157f483` feat(agent-trace): promote uploader+recorder hook fixes to platform
+- `8793f64` feat(skill-creator): add Step 2.5 update mode for existing skills (sync from IWE WP-422 Ф7)
+- `7468c0f` feat(skill): promote bottleneck-pick L3->L1, description+phrases
+- `760be7b` feat(skill-creator): promote to platform L1 (WP-422 Ф6)
+- `d6160b2` feat: promote skill artifactor from staging (L1)
+- `7f19385` feat(skill): promote kimi-peer-writer fix — NameError peer_agent + deprecated utcnow
 - `5e21531` feat(WP-7/SP1): refactor skill-promote.sh — safety, validation, tests
 - `53cd985` feat(day-open): add ТВС labeling step to skill template (§6b2)
 - `36febfd` feat(strategy): модель ТВС в шаблон (стратегирование + ОРЗ)
 - `673474d` feat(WP-388): проекция базы стиля — 4 новых элемента регистра (зеркало L0)
+- `dd117c5` feat(styles): WP-412 Ф11 — дисциплина языковых стилей в шаблон IWE
+- `83434ea` feat: promote pull-on-touch.sh — детерминированный Pull-on-Touch (CLAUDE.md §2 п.5)
 
 ### Changed
 
-- `b17b71d` refactor(diagnose-iwe): deduplicate SKILL.md v5.0 via marker-based generation
-- `c2833d2` chore: reduce divergence — rm fleeting-notes (→DS-strategy), adopt upstream iwe-drift/day-close
-- `496085d` Merge remote-tracking branch 'upstream/main'
+- `0aaa844` chore(memory): update fpf-reference.md
+- `7baebc5` refactor(diagnose): rename skill diagnose-iwe -> diagnose
+- `89c0837` chore: remove dead hook wakatime-heartbeat.sh
+- `70d540b` docs: remove PACK-MIM from CHANGELOG [protocol-close]
+- `ed2cca0` docs: add KIMI-SETUP.md — инструкция по подключению Kimi к IWE
+- `d98c62e` chore(skill-creator): bump version to 0.3.0 (sync from IWE)
+- `f820cb9` docs(local-llm): sync ADR-001 venv-Python note from author SoT (WP-404 Ф4)
+- `a512810` chore(day-close): commit dirty changes from 2026-06-15
 - `6c8a4cd` docs(WP-362 Ф8.1): developer/README — тиры T1-T4 → T0-T4 (консистентность с каноном)
 - `6fdb1b0` docs(WP-362): Ф8 — FMT/docs self-contained онбординг
 
 ### Fixed
 
-- `6bb63c0` fix(CLAUDE): add pre-commit staged-scope verification rule
-- `59ceb44` fix(strategy-session): add missing Backlog.md template (B-005)
-- `9a88149` fix(day-open): wrong scripts path in calendar/scaffold/active-wp lookups
+- fix(update.sh): guard step [0] self-update from --check mode; add self-integrity hash guard (fix #205)
+- fix(CLAUDE.md §9): remove personal maintainer content, replace with neutral L3 stub (fix #199/#203)
+- `d8c8568` fix(validate-template): skip wakatime-heartbeat.sh in orphan hook check
+- `5917dd6` fix: pathspec enforcement in 6 finalizing skills + lesson-close + skill-promote
+- `b7d1c4c` fix(diagnose): remove duplicate /diagnose trigger entries after rename
+- `ac815a0` fix(skill-promote): GNU-first stat for cross-platform permission preservation
+- `f10e03e` fix(skill-promote): cross-platform cp — copy CONTENTS, not nested dir
+- `ab0c385` fix(wp-432): repair skill-promote tests broken by L1 USER-SPACE feature
+- `ac15602` fix(diagnose-iwe): update form-089.yaml to v5.0 + add USER-SPACE marker
+- `9ac6df2` fix(naming): Решат → Ильшат во всех упоминаниях имени [no-registry-touch]
+- `7e07287` fix: update manifest to exclude auto-generated translation files
+- `de06083` fix(wp-149): sync lesson-close.sh to use lesson/ path instead of workbook/
+- `24dbd80` fix: update subscription name from Бесконечное развитие to Инженерия интеллекта in template
+- `762a441` fix(setup): T3/T4 MCP auth — write .mcp.json with ict_token Bearer header
+- `290d149` fix(wp-7): sanitize author-specific content in template-sync'd files
+- `850c303` fix(wp-7/wpn1): promote create-wp.sh with GOV_REPO parametrization
+- `0f92b40` fix(skill-creator): SKILL.md v0.3.1 — review fixes Critical+High
+- `b653a38` fix(ke-queue-stats): frontmatter parser + support pending and pending-review statuses
+- `7c7151c` fix(ke-queue-stats): fix COUNT double-output bug and cross-platform stat
+- `c92d968` fix(promote): auto-regenerate update-manifest.json after hook/script promotion
+- `2d20f46` fix(manifest): close 3 gaps that let skill files bypass coverage check
+- `daeaa01` fix(manifest): exclude .backups/, add promoted skill files (artifactor + skill-creator)
+- `4d7c2f3` fix(skill-creator): remove /create-skill alias from triggers and description
+- `9bd0593` fix(update.sh): Windows SSL revocation flag detection via curl --help
+- `b1b45cd` fix(WP-7): strategist runner env fallback + diagnose-iwe YAML sync (#136 #122)
 - `a823c51` fix(WP-7): setup/validate-template.sh delivery, CLAUDE.md conflict hard-fail, manifest coverage
 - `8073146` fix(WP-7): FMT delivery — .claude/styles propagation, manifest sync, smoke Test 6e
 - `cb8a1a6` fix(COL-06): communication-style-base.md — L1 → S1 (авторский слой)
 - `06b9d79` fix(WP-376): A52/A49/A50/A51 — template hygiene и agentigore sample
+- `c869a3c` fix(pull-on-touch): autostash вместо пропуска-на-грязном — тянет даже на dirty-репо
 
 
 ## [0.35.4] — 2026-06-15
@@ -76,6 +188,49 @@ Versioning: [Semantic Versioning](https://semver.org/).
 
 - `template-sync.sh` отрезает §9 при синхронизации, поэтому правки §9 в этом релизе сделаны прямой правкой `FMT/CLAUDE.md`, не через sync.
 - `update-manifest.json`: +2 пути (`AGENTS.md`, `memory/feedback_response_clarity_for_pilot.md`); версия `0.35.0 → 0.35.1`.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## [0.35.0] — 2026-06-01
 
@@ -216,11 +371,13 @@ Cross-agent peer-сессии (DP.SC.154) теперь работают «из �
 - `5bffbc9` fix: replace hardcoded DS-strategy with GOVERNANCE_DIR/GOVERNANCE_REPO env vars
 - `2c5e91d` fix(pack-templates): DP.WP.NNN — добавить §6 пример Stage Dependency Map
 
+
 ## [0.34.1] — 2026-05-21
 
 ### Fixed
 
 - `8a231a3` fix(CI): закрыть 3 реальных блокера Validate Template — regex detector #9, hardcoded DS-strategy, smoke-test gh auth, install.sh portability
+
 
 ## [0.34.0] — 2026-05-20
 
@@ -246,6 +403,7 @@ Cross-agent peer-сессии (DP.SC.154) теперь работают «из �
 - `767ad46` fix(dt-collect+templates): fix weekly multiplier parser + format note
 - `d13af21` fix(WP-295): pretty=format → tformat для produced_artifact_ids
 
+
 ## [0.33.0] — 2026-05-18
 
 ### Added
@@ -264,6 +422,7 @@ Cross-agent peer-сессии (DP.SC.154) теперь работают «из �
 - `d13af21` fix(WP-295): pretty=format → tformat для produced_artifact_ids
 - `9d96a63` fix(changelog): 5 багов из code review субагента
 - `4db37fd` fix: rename S-43→S-44 (Telegram reminders) to avoid numbering conflict with Agent Fault Profile
+
 
 ## [0.32.0] — 2026-05-17
 
@@ -1291,7 +1450,7 @@ Commits: 150be24 (I1+I2 sync из DS-ai-systems), 731471f (I3 sweep 11 точе�
 
 ### Changed
 - **protocol-completion-reminder.sh** — расширен на Skill tool: теперь срабатывает при вызове `day-open|day-close|run-protocol|wp-new` и напоминает создать TodoWrite ДО исполнения
-- **protocol-artifact-validate.sh** — добавлены структурные проверки DayPlan: (1) `` collapsible ≥3 блоков, (2) непустые секции Календарь/QA/Scout, (3) мультипликатор `~N.Nx`, (4) Carry-over цитата при наличии предыдущего DayPlan
+- **protocol-artifact-validate.sh** — добавлены структурные проверки DayPlan: (1) `<details>` collapsible ≥3 блоков, (2) непустые секции Календарь/QA/Scout, (3) мультипликатор `~N.Nx`, (4) Carry-over цитата при наличии предыдущего DayPlan
 
 ## [0.23.1] — 2026-04-09
 
