@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # see WP-415 (IWE translation pipeline: RU FMT-exocortex-template → EN iwesys)
-"""IWE document translator: RU source → EN candidate via Claude API.
+"""IWE document translator: RU source → EN candidate via Claude models on OpenRouter.
 
 Usage:
     # Translate files to output directory
@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import os
 import re
 import subprocess
 import sys
@@ -25,10 +26,17 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-import anthropic
+import openai
 import yaml
 
-DEFAULT_MODEL = "claude-sonnet-4-6"
+DEFAULT_MODEL = "anthropic/claude-sonnet-4.6"
+OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+# OpenRouter grants the standard (non-strict) rate limit only when these
+# attribution headers are present (see iwe-translation-engine lesson, 2026-06-22)
+OPENROUTER_HEADERS = {
+    "HTTP-Referer": "https://github.com/TserenTserenov/FMT-exocortex-template",
+    "X-Title": "IWE Translate Sync",
+}
 
 _SCRIPT_ROOT = Path(__file__).parent.parent  # FMT-exocortex-template root
 DEFAULT_STYLE = _SCRIPT_ROOT / "translation" / "en-doc-style.md"
@@ -118,37 +126,40 @@ def ascii_guard(body: str, meta: dict, translate_keys: list[str]) -> list[str]:
 # ---------------------------------------------------------------------------
 
 
+def _make_client() -> openai.OpenAI:
+    """Build the OpenRouter client (env: OPENROUTER_API_KEY)."""
+    return openai.OpenAI(
+        api_key=os.environ["OPENROUTER_API_KEY"],
+        base_url=os.environ.get("OPENAI_BASE_URL", OPENROUTER_BASE_URL),
+        default_headers=OPENROUTER_HEADERS,
+    )
+
+
 def translate_with_retry(
-    client: anthropic.Anthropic,
+    client: openai.OpenAI,
     system_prompt: str,
     user_content: str,
     model: str,
     max_retries: int = 5,
 ) -> str:
-    """Call Claude API with exponential backoff on rate-limit errors (Critical fix #4)."""
+    """Call the model with exponential backoff on rate-limit errors (Critical fix #4)."""
     delay = 2.0
     for attempt in range(max_retries):
         try:
-            response = client.messages.create(
+            response = client.chat.completions.create(
                 model=model,
                 max_tokens=8192,
-                system=system_prompt,
-                messages=[{"role": "user", "content": user_content}],
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_content},
+                ],
             )
-            return response.content[0].text
-        except anthropic.RateLimitError:
+            return response.choices[0].message.content or ""
+        except openai.RateLimitError:
             if attempt == max_retries - 1:
                 raise
             time.sleep(delay)
             delay *= 2
-        except anthropic.APIStatusError as e:
-            if e.status_code == 429:
-                if attempt == max_retries - 1:
-                    raise
-                time.sleep(delay)
-                delay *= 2
-            else:
-                raise
     raise RuntimeError("unreachable")  # pragma: no cover
 
 
@@ -203,7 +214,7 @@ def translate_file(
     file_path: Path,
     system_prompt: str,
     translate_keys: list[str],
-    client: anthropic.Anthropic,
+    client: openai.OpenAI,
     model: str,
 ) -> tuple[str, list[str]]:
     """Translate a single file. Returns (translated_text, violations).
@@ -401,7 +412,7 @@ def run_translate(args: argparse.Namespace, manifest: dict, glossary: dict) -> i
     output_dir = Path(args.output_dir)
     translate_keys: list[str] = manifest.get("frontmatter_translate_keys", [])
 
-    client = anthropic.Anthropic()
+    client = _make_client()
     system_prompt = _build_system_prompt(style_path, glossary, manifest)
     model: str = args.model
 
@@ -571,7 +582,7 @@ def main() -> int:
     parser.add_argument(
         "--model",
         default=DEFAULT_MODEL,
-        help=f"Claude model ID (default: {DEFAULT_MODEL})",
+        help=f"Model ID on OpenRouter (default: {DEFAULT_MODEL})",
     )
     parser.add_argument(
         "--output-dir",

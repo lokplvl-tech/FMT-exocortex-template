@@ -38,7 +38,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install anthropic pyyaml pytest
+        run: pip install openai pyyaml pytest
 
       - name: Run delivery tests (formal + content, unit-level)
         run: |
@@ -58,7 +58,7 @@ jobs:
 
       - name: Translate changed category-D files (delta)
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
           python3 scripts/translate.py --mode=delta \
             --output-dir ../en-out \
