@@ -1,4 +1,3 @@
-<body>
 # Inter-Agent Handoff: Kimi ↔ Claude Code
 
 > Role: architectural pattern WP-207 H6  
@@ -59,4 +58,3 @@ Claude (assessment / archgate / think)
 - **Context window:** `.handoff.md` ≤150 lines (Sawtooth compression — WP-207 P3)
 - **Freshness:** handoff becomes stale within hours → mandatory probe before start
 
-</body>

@@ -1,4 +1,3 @@
-<body>
 # Connect IWE from Your Browser in 2 Minutes
 
 > **Who this is for:** You want to connect an AI assistant that knows the MIM methodology, knows you, and grows with you. No installation required — works directly in the browser.
@@ -94,4 +93,3 @@ IWE works in clients beyond Claude.ai:
 
 *Created: 2026-04-08 | Related: [club post](https://systemsworld.club/t/iwe-dostupen-iz-brauzera/38058) | DP.SC.119, DP.SC.101*
 
-</body>

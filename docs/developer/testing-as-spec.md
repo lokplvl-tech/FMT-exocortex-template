@@ -1,4 +1,3 @@
-<body>
 # Testing as Specification
 
 > For developers writing tests for IWE code (MCP services, bot handlers, Scripts). Referenced from [developer-guide.md](developer-guide.md) at the transition between Station 3 (Design) and Station 4 (Work).
@@ -28,4 +27,3 @@ A test describes system behavior at its **boundary** — what it accepts and wha
 
 This methodology emerged from a meeting with an external development expert (the Protocol is stored in your governance repo, `{{GOVERNANCE_REPO}}/inbox/`).
 
-</body>

@@ -1,4 +1,3 @@
-<body>
 # IWE — Intellectual Work Environment
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -285,4 +284,3 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) — how to contribute to the project.
 ## License
 
 MIT
-</body>

@@ -3,7 +3,6 @@ marp: true
 paginate: true
 theme: default
 ---
-<body>
 
 <style>
   section {
@@ -511,4 +510,3 @@ The ability to see the **whole**, not only the parts.
 **Cost:** basic AI access is included in the BR subscription. Your own LLM key (e.g., Claude Pro ~$20/month) is optional, for Direct MCP. Free tier (freemium) — no subscription required.
 **Is programming required:** No.
 
-</body>

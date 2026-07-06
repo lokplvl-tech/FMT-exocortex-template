@@ -1,4 +1,3 @@
-<body>
 # Script Promotion: L3 (author) → L1 (universal)
 
 > Process for moving a script from the author zone (`WORKSPACE/scripts/`) into the FMT
@@ -172,4 +171,3 @@ On a direct `git commit` — it is your responsibility to run it manually.
 - `scripts/promote-common.sh::record_promotion()` — writer for promotion-status.yaml
 - **RELEASE-PROCESS.md** — release checklist + `deprecated_files` convention
 
-</body>

@@ -1,4 +1,3 @@
-<body>
 # Where to Start as an IWE Developer
 
 > **This is the only reference a newcomer needs.** Read top to bottom — in 10 minutes you will understand what to do and complete your first task.
@@ -63,4 +62,3 @@ When you open a Pull Request, a Template with a 6-station checklist will appear 
 ---
 
 *Related documents: [developer guide](developer-guide.md), [card Template](card-template.md), [learning path by tier](../LEARNING-PATH.md). Roles and the Pipeline promise (`DP.ROLE.068`–`072`, `DP.SC.171`) live in the team Pack — available to members only; external forkers do not need them to work (a brief summary of the Roles is in the table above and in the «Your Role in This System» section).*
-</body>

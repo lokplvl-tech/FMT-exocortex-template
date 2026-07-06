@@ -1,4 +1,3 @@
-<body>
 # IWE Developer Guide
 
 > For T4+ developers (TD1). If you do not know your tier — read the [tier path](../LEARNING-PATH.md) first.
@@ -51,4 +50,3 @@ If a task is stuck longer than the estimate (closed-loop — hours, open-loop �
 ---
 
 *Version: 2026-07-01. Related documents: [tier path](../LEARNING-PATH.md) (T1–T4), [card template](card-template.md), [CLAUDE.md](../../CLAUDE.md) (WP Gate), [testing as specification](testing-as-spec.md).*
-</body>

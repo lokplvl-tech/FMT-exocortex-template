@@ -1,4 +1,3 @@
-<body>
 # ADR-003: IWE Platform Hosting
 
 **Status:** Accepted (specification)
@@ -155,4 +154,3 @@ The Vagrant image is the third delivery method (for a DevOps audience and testin
 
 **Total:** 60/70 — PASS (≥8 on all characteristics including Security ≥8).
 
-</body>
