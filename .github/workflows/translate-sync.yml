@@ -39,7 +39,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install openai pyyaml pytest
+        run: pip install pyyaml pytest
 
       - name: Run delivery tests (formal + content, unit-level)
         run: |

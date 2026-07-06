@@ -18,15 +18,17 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import os
 import re
 import subprocess
 import sys
 import time
+import urllib.error
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-import openai
 import yaml
 
 DEFAULT_MODEL = "anthropic/claude-sonnet-4.6"
@@ -133,12 +135,44 @@ def ascii_guard(body: str, meta: dict, translate_keys: list[str]) -> list[str]:
 # ---------------------------------------------------------------------------
 
 
-def _make_client() -> openai.OpenAI:
+class RateLimitError(RuntimeError):
+    """OpenRouter returned HTTP 429."""
+
+
+class OpenRouterClient:
+    """Minimal OpenRouter chat-completions client. OpenRouter's API is
+    OpenAI-compatible, but this script only ever talks to OpenRouter — a raw
+    HTTP call avoids depending on the `openai` package for that compatibility
+    shim (and the CI dependency-install drift that came with it)."""
+
+    def __init__(self, api_key: str, base_url: str) -> None:
+        self._endpoint = f"{base_url.rstrip('/')}/chat/completions"
+        self._headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}",
+            **OPENROUTER_HEADERS,
+        }
+
+    def chat_completion(self, model: str, messages: list[dict], max_tokens: int) -> tuple[str, str]:
+        """Returns (finish_reason, content)."""
+        body = json.dumps({"model": model, "max_tokens": max_tokens, "messages": messages}).encode("utf-8")
+        request = urllib.request.Request(self._endpoint, data=body, method="POST", headers=self._headers)
+        try:
+            with urllib.request.urlopen(request) as response:
+                payload = json.loads(response.read().decode("utf-8"))
+        except urllib.error.HTTPError as e:
+            if e.code == 429:
+                raise RateLimitError(str(e)) from e
+            raise
+        choice = payload["choices"][0]
+        return choice["finish_reason"], choice["message"]["content"] or ""
+
+
+def _make_client() -> OpenRouterClient:
     """Build the OpenRouter client (env: OPENROUTER_API_KEY)."""
-    return openai.OpenAI(
+    return OpenRouterClient(
         api_key=os.environ["OPENROUTER_API_KEY"],
         base_url=os.environ.get("OPENAI_BASE_URL", OPENROUTER_BASE_URL),
-        default_headers=OPENROUTER_HEADERS,
     )
 
 
@@ -151,7 +185,7 @@ class TranslationTruncated(RuntimeError):
 
 
 def translate_with_retry(
-    client: openai.OpenAI,
+    client: OpenRouterClient,
     system_prompt: str,
     user_content: str,
     model: str,
@@ -161,7 +195,7 @@ def translate_with_retry(
     delay = 2.0
     for attempt in range(max_retries):
         try:
-            response = client.chat.completions.create(
+            finish_reason, content = client.chat_completion(
                 model=model,
                 max_tokens=MAX_OUTPUT_TOKENS,
                 messages=[
@@ -169,14 +203,13 @@ def translate_with_retry(
                     {"role": "user", "content": user_content},
                 ],
             )
-            choice = response.choices[0]
-            if choice.finish_reason == "length":
+            if finish_reason == "length":
                 raise TranslationTruncated(
                     f"model output hit the {MAX_OUTPUT_TOKENS}-token cap before "
                     "finishing — source is too long for a single translation call"
                 )
-            return choice.message.content or ""
-        except openai.RateLimitError:
+            return content
+        except RateLimitError:
             if attempt == max_retries - 1:
                 raise
             time.sleep(delay)
@@ -238,7 +271,7 @@ def translate_file(
     file_path: Path,
     system_prompt: str,
     translate_keys: list[str],
-    client: openai.OpenAI,
+    client: OpenRouterClient,
     model: str,
 ) -> tuple[str, list[str]]:
     """Translate a single file. Returns (translated_text, violations).
