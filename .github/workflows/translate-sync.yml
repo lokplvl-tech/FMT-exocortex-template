@@ -4,6 +4,7 @@ name: Translate Sync (RU → EN)
 # Peer-session: sessions/2026-07/2026-07-01-12-wp415-translation-pipeline-automation/report.md
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
@@ -60,9 +61,17 @@ jobs:
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
+          set +e
           python3 scripts/translate.py --mode=delta \
             --output-dir ../en-out \
             --state-file ../en-draft/.translation-state.yaml
+          rc=$?
+          set -e
+          # rc=2 is ASCII-guard warnings only: en-draft is a human-review
+          # staging branch, so leftover Cyrillic stays visible in the log
+          # and in delivery checks; the hard no-Cyrillic gate belongs to
+          # the iwesys publish stage (Phase V4), not to this sync.
+          if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ]; then exit "$rc"; fi
 
       - name: Formal + content delivery checks (Tier-1 fail / Tier-2-3 warn)
         id: delivery_checks
@@ -115,4 +124,7 @@ jobs:
             exit 0
           fi
           git commit -m "chore(translate-sync): sync EN draft from $(git -C "$GITHUB_WORKSPACE" rev-parse --short HEAD) [skip-translate]"
-          git push origin en-draft
+          # HEAD:en-draft also covers the detached worktree that
+          # `git worktree add ../en-draft origin/en-draft` produces when
+          # the branch already exists on the remote
+          git push origin HEAD:en-draft
