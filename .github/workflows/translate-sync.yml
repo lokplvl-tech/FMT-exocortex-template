@@ -167,6 +167,12 @@ jobs:
         with:
           ref: en-draft
           fetch-depth: 0
+          # actions/checkout persists its default GITHUB_TOKEN as a git
+          # credential for https://github.com/ by default — that overrides
+          # the app-token credentials embedded in the `iwesys` remote URL
+          # below (same host, different repo), so the push authenticates
+          # as github-actions[bot] instead of the app and gets a 403.
+          persist-credentials: false
 
       - name: Check target repo exists
         id: target_check
