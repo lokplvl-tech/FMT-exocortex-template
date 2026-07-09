@@ -1042,7 +1042,6 @@
     "scripts/delivery_checks.py",
     "scripts/fmt-critical-alert.sh",
     "scripts/generate-catalogs.py",
-    "scripts/generate-day-report.sh",
     "scripts/generate-diagnose-skill.py",
     "scripts/generate-executor-catalog.py",
     "scripts/generate-helper-catalog.py",

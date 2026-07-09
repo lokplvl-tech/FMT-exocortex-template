@@ -2,19 +2,39 @@
 # day-open-pipeline.sh — оркестратор полного конвейера Day Open (WP-356 DOE3)
 # Поток: preflight → scaffold → llm-fill (per-section) → checks → commit/push
 #
-# FMT promotion note (WP-7 FMT-PROMOTE-DAYOPEN1): this entry point plus its 6
+# FMT promotion note (WP-7 FMT-PROMOTE-DAYOPEN1): this entry point plus its 5
 # dependencies (day-open-checks-runner.sh, day-open-llm-fill.py,
-# day-open-budget-patch.py, generate-day-report.sh, update-derived-snapshot.py,
-# llm-proxy-launcher.sh) and day-open-scaffold.sh are all promoted here and
-# seeded into seed/strategy/scripts/ for new DS-strategy repos. Not yet wired:
-# no launchd role registers this pipeline for a new user (see roles/ — none
-# reference day-open); that remains a separate follow-up (day-open role,
-# IntegrationGate required before implementation).
+# day-open-budget-patch.py, update-derived-snapshot.py, llm-proxy-launcher.sh)
+# and day-open-scaffold.sh are all promoted here and seeded into
+# seed/strategy/scripts/ for new DS-strategy repos. Not yet wired: no launchd
+# role registers this pipeline for a new user (see roles/ — none reference
+# day-open); that remains a separate follow-up (day-open role, IntegrationGate
+# required before implementation).
 
 set -uo pipefail
 
 IWE="${IWE_ROOT:-$HOME/IWE}"
 CONFIG="$IWE/${IWE_GOVERNANCE_REPO:-DS-strategy}/exocortex/day-rhythm-config.yaml"
+
+# ============================================
+# 1.5. Opportunistic derived_snapshot refresh (WP-425 Level 2a)
+# Runs update-derived-snapshot.py --if-stale-days=10 in background.
+# Non-blocking: Day Open continues even if the refresh fails.
+#
+# Above every early-exit branch on purpose (WP-5 VDV correction, 2026-07-09):
+# it serves guide freshness, not today's plan, so it must fire on every
+# invocation regardless of how Day Open itself resolves. `--if-stale-days`
+# is the only throttle — don't move it back below an early-exit.
+# Runs before secrets are sourced further down — fine today, since
+# update-derived-snapshot.py authenticates via the claude CLI session, not
+# via any of AIST_ENV/ANTHROPIC_ENV. If it ever needs those, source secrets
+# before this block instead of moving the block back down.
+# ============================================
+echo "=== 1.5. Snapshot refresh (opportunistic) ==="
+(python3 "$IWE/${IWE_GOVERNANCE_REPO:-DS-strategy}/scripts/update-derived-snapshot.py" --if-stale-days 10 \
+  >> "$IWE/${IWE_GOVERNANCE_REPO:-DS-strategy}/logs/personal-guide-update.log" 2>&1 || true) &
+SNAPSHOT_PID=$!
+echo "  snapshot refresh pid=$SNAPSHOT_PID (background, non-blocking)"
 
 # --- CLI args ---
 FORCE=false
@@ -209,17 +229,6 @@ if [ "$FORCE" != "true" ]; then
 fi
 
 # ============================================
-# 1.5. Opportunistic derived_snapshot refresh (WP-425 Level 2a)
-# Runs update-derived-snapshot.py --if-stale-days=10 in background.
-# Non-blocking: Day Open continues even if the refresh fails.
-# ============================================
-echo "=== 1.5. Snapshot refresh (opportunistic) ==="
-(python3 "$IWE/${IWE_GOVERNANCE_REPO:-DS-strategy}/scripts/update-derived-snapshot.py" --if-stale-days 10 \
-  >> "$IWE/${IWE_GOVERNANCE_REPO:-DS-strategy}/logs/personal-guide-update.log" 2>&1 || true) &
-SNAPSHOT_PID=$!
-echo "  snapshot refresh pid=$SNAPSHOT_PID (background, non-blocking)"
-
-# ============================================
 # 2. Ensure LLM Proxy available
 # ============================================
 echo "=== 2. LLM Proxy healthcheck ==="
@@ -254,7 +263,7 @@ bash "$IWE/scripts/server-calendar.sh" "$DATE" "$CONFIG" > "$CALENDAR_OUT" 2>/de
 
 # Export so that day-open-scaffold.sh uses correct repo when run from launchd
 # (launchd doesn't inherit shell env where IWE_GOVERNANCE_REPO is set via .zshrc)
-export IWE_GOVERNANCE_REPO="${IWE_GOVERNANCE_REPO:-DS-strategy}"
+export IWE_GOVERNANCE_REPO="${IWE_GOVERNANCE_REPO:-${IWE_GOVERNANCE_REPO:-DS-strategy}}"
 
 # Generate scaffold to temp file first (for hash guard)
 SCAFFOLD_TEMP="$DAYPLAN_PATH.scaffold.tmp"
@@ -437,11 +446,5 @@ jq -n \
   '{date: $date, commit_hash: $commit, timestamp: $ts, status: "success"}' \
   > "$HEARTBEAT_FILE"
 echo "  Heartbeat recorded: $HEARTBEAT_FILE"
-
-# ============================================
-# 8. Day report draft (opportunistic, non-blocking — docs/day-open/REPORT-STRUCTURE.md)
-# ============================================
-echo "=== 8. Day report draft ==="
-bash "$IWE/${IWE_GOVERNANCE_REPO:-DS-strategy}/scripts/generate-day-report.sh" "$DATE" 2>&1 || echo "  Day report draft failed (non-blocking)"
 
 echo "=== Done ==="
