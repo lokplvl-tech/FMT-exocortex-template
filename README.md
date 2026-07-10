@@ -258,8 +258,8 @@ In the community, those questions get answered by people who have already been t
 
 ### Free Channels
 
-- [GitHub Discussions](https://github.com/TserenTserenov/FMT-exocortex-template/discussions) — questions, ideas, show your setup
-- [Issues](https://github.com/TserenTserenov/FMT-exocortex-template/issues) — bug reports and feature requests
+- [GitHub Discussions](https://github.com/iwesys/IWE/discussions) — questions, ideas, show your setup
+- [Issues](https://github.com/iwesys/IWE/issues) — bug reports and feature requests
 
 ### Closed Community (Telegram)
 

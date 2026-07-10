@@ -1,12 +1,14 @@
 ---
-name: Please file this on the source repository
-about: This repo is a read-only English projection
+name: Bug report or feature request
+about: Tell us what broke or what's missing
 title: ''
 labels: ''
 assignees: ''
 ---
 
-This repository is an automatically published projection and does not
-accept issues directly.
+**What happened / what do you need?**
 
-Please open your issue on the source repository instead: https://github.com/TserenTserenov/FMT-exocortex-template/issues
+**Steps to reproduce (for bugs):**
+
+**Environment:** OS, agent (Claude Code / other), template version
+(see the Version badge in the README).

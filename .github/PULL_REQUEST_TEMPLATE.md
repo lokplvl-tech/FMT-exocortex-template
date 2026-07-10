@@ -1,3 +1,3 @@
-This repository is an automatically published English projection of
-[https://github.com/TserenTserenov/FMT-exocortex-template](https://github.com/TserenTserenov/FMT-exocortex-template). Pull requests here will not be merged — please open your
-PR against the source repository instead.
+This distribution is assembled by an automated publishing pipeline —
+direct pull requests can't be merged here. Please open an
+[issue](https://github.com/iwesys/IWE/issues) describing the change instead.
