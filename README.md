@@ -11,7 +11,7 @@
 >
 > **Тип репозитория:** `Base/Форматы` (FMT) — шаблон-дистрибутив. После форка становится вашей персональной средой с ИИ-агентами.
 
-**[English version](README.en.md)**
+**[English version](https://github.com/iwesys/IWE)**
 
 ---
 
