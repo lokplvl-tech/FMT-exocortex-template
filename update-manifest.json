@@ -126,7 +126,16 @@
       "path": ".claude/process-pattern-catalog.yaml"
     },
     {
+      "path": ".claude/rules-lazy/drift-guard.md"
+    },
+    {
+      "path": ".claude/rules-lazy/new-files-guard.md"
+    },
+    {
       "path": ".claude/rules-lazy/role-prefixes-full.md"
+    },
+    {
+      "path": ".claude/rules-lazy/wp-stop-list.md"
     },
     {
       "path": ".claude/rules/distinctions.md"
