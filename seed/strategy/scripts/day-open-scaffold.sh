@@ -412,9 +412,31 @@ render_bot_qa() {
   fi
 }
 
+# Portable per-call timeout — no `timeout`/`gtimeout` dependency (often missing on
+# macOS, see issue #230). Bounds a backgrounded command to $2 seconds; on timeout,
+# kills it and returns whatever it had already written to stdout.
+# Usage: run_bounded <seconds> <cmd...>
+run_bounded() {
+  local secs="$1"; shift
+  local out_file start
+  out_file=$(mktemp)
+  ("$@" >"$out_file" 2>/dev/null) &
+  local pid=$!
+  start=$SECONDS
+  while kill -0 "$pid" 2>/dev/null; do
+    sleep 0.2
+    [ $((SECONDS - start)) -ge "$secs" ] && { kill "$pid" 2>/dev/null; break; }
+  done
+  wait "$pid" 2>/dev/null
+  cat "$out_file"
+  rm -f "$out_file"
+}
+
 # --- Section: Новые задачи в репозиториях (issue sweep, 2 дня) ---
 # Сигнальный канал из day-open/SKILL.md:54 (раньше был только в спеке, не в коде).
 # Ленивый: кэш 1ч + fallback при недоступности gh — не ломает pipeline (требование peer-сессии 2026-06-04-32).
+# Каждый `gh issue list` ограничен $ISSUE_SWEEP_TIMEOUT секунд (issue #241: на WSL2
+# один зависший сетевой вызов без тайм-бокса вешал весь sweep на 180с+ без вывода).
 render_repo_issues() {
   command -v gh >/dev/null 2>&1 || { echo "_gh CLI недоступен — обзор задач пропущен._"; return; }
   local cache="/tmp/iwe-issue-sweep-$DATE.md"
@@ -433,15 +455,17 @@ render_repo_issues() {
     git -C "$repo" remote get-url origin 2>/dev/null | grep -qi github || continue
     slug=$(basename "$repo")
     # New issues (last 2 days)
-    rows=$( (cd "$repo" && gh issue list --state open --search "created:>=$since" \
-             --json number,title --jq '.[] | "| #\(.number) | \(.title) |"' 2>/dev/null) )
+    rows=$(run_bounded "${ISSUE_SWEEP_TIMEOUT:-10}" bash -c \
+      "cd '$repo' && gh issue list --state open --search 'created:>=$since' \
+       --json number,title --jq '.[] | \"| #\(.number) | \(.title) |\"'")
     if [ -n "$rows" ]; then
       out="${out}\n**${slug} (новые):**\n\n| # | Заголовок |\n|---|---|\n${rows}\n"
       any=1
     fi
     # Stale issues: open + labeled stale-unattended (pipeline gap fix, issue #pipeline)
-    stale_count=$( (cd "$repo" && gh issue list --state open --label "stale-unattended" \
-                   --json number --jq 'length' 2>/dev/null) || echo "0" )
+    stale_count=$(run_bounded "${ISSUE_SWEEP_TIMEOUT:-10}" bash -c \
+      "cd '$repo' && gh issue list --state open --label 'stale-unattended' --json number --jq 'length'")
+    [ -z "$stale_count" ] && stale_count=0
     if [ "${stale_count:-0}" -gt 0 ] 2>/dev/null; then
       local remote_url
       remote_url=$(git -C "$repo" remote get-url origin 2>/dev/null \
