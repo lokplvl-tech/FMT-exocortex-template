@@ -203,7 +203,7 @@ repair_pass() {
                     fi
                 fi
                 ;;
-            .claude/skills/*|.claude/hooks/*|.claude/rules/*|.claude/rules-lazy/*|.claude/lib/*|.claude/config/*|.claude/detectors/*|.claude/scripts/*|.claude/agents/*|.claude/styles/*|.claude/templates/*|.claude/settings.json)
+            .claude/skills/*|.claude/hooks/*|.claude/rules/*|.claude/rules-lazy/*|.claude/lib/*|.claude/config/*|.claude/detectors/*|.claude/scripts/*|.claude/agents/*|.claude/styles/*|.claude/templates/*)
                 dst="$WORKSPACE_DIR/$fpath"
                 if [ ! -f "$dst" ]; then
                     mkdir -p "$(dirname "$dst")"
@@ -215,6 +215,22 @@ repair_pass() {
                     cp "$SCRIPT_DIR/$fpath" "$dst"
                     case "$fpath" in *.sh) chmod +x "$dst" ;; esac
                     echo "  ⟲ $fpath → workspace (stale repair)"
+                    REPAIRED=$((REPAIRED + 1))
+                fi
+                ;;
+            .claude/settings.json)
+                # bug-2026-07-11: settings.json mixes L1 platform defaults with L4 user
+                # hooks/permissions (custom security hooks, additionalDirectories, allow-list).
+                # Treating it like a pure-L1 path (skills/hooks/rules/...) made every "hash
+                # differs from template" stale-repair silently clobber the user's own hooks
+                # back to the generic template — a live regression found and fixed live in
+                # this file (see inbox/bugs/bug-2026-07-11-update-sh-settings-json-clobber.md).
+                # Only seed on first install; never overwrite an existing file here.
+                dst="$WORKSPACE_DIR/$fpath"
+                if [ ! -f "$dst" ]; then
+                    mkdir -p "$(dirname "$dst")"
+                    cp "$SCRIPT_DIR/$fpath" "$dst"
+                    echo "  ⟲ $fpath → workspace (repair, new install)"
                     REPAIRED=$((REPAIRED + 1))
                 fi
                 ;;
@@ -882,12 +898,24 @@ for f in "${NEW_FILES[@]}" "${UPDATED_FILES[@]}"; do
                 echo "  ✓ $f → workspace"
             fi
             ;;
-        .claude/skills/*|.claude/hooks/*|.claude/rules/*|.claude/rules-lazy/*|.claude/lib/*|.claude/config/*|.claude/detectors/*|.claude/scripts/*|.claude/agents/*|.claude/styles/*|.claude/templates/*|.claude/settings.json)
+        .claude/skills/*|.claude/hooks/*|.claude/rules/*|.claude/rules-lazy/*|.claude/lib/*|.claude/config/*|.claude/detectors/*|.claude/scripts/*|.claude/agents/*|.claude/styles/*|.claude/templates/*)
             src="$SCRIPT_DIR/$f"
             dst="$WORKSPACE_DIR/$f"
             mkdir -p "$(dirname "$dst")"
             cp "$src" "$dst"
             echo "  ✓ $f → workspace"
+            ;;
+        .claude/settings.json)
+            # See repair_pass() comment above (bug-2026-07-11) — never blind-overwrite,
+            # workspace copy carries user hooks/permissions the template doesn't have.
+            dst="$WORKSPACE_DIR/$f"
+            if [ ! -f "$dst" ]; then
+                mkdir -p "$(dirname "$dst")"
+                cp "$SCRIPT_DIR/$f" "$dst"
+                echo "  ✓ $f → workspace (new install)"
+            else
+                echo "  ⚠ $f — платформа обновила hooks/permissions, workspace-копия НЕ тронута (несёт пользовательские хуки). Сверь вручную: diff \"$SCRIPT_DIR/$f\" \"$dst\""
+            fi
             ;;
     esac
 done
