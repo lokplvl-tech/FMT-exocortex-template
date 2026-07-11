@@ -143,6 +143,9 @@ Versioning: [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- `ae960a2` fix(close-protocols): move final commit after knowledge-write steps (#249)
+- `914a39b` fix(validate-template): checks 2/3 print same file types they count (#247)
+- `e98f152` fix(gitignore): cover .claude/state/ — create-wp.sh consent-sentinels leave untracked tail (#250)
 - `242ec42` fix(manifest): deliver scripts/ by default instead of blanket-excluding it (#247, root #246)
 - `a5c6d0f` fix(day-open-scaffold): bound remaining unprotected network calls (#241 residual)
 - `b0ad33b` fix(update.sh): git-based author_diverged() guard replaces path whitelist (#238)
