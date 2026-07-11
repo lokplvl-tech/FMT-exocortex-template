@@ -1008,6 +1008,12 @@
       "path": "scripts/add-skill-markers.sh"
     },
     {
+      "path": "scripts/agent-heartbeat.sh"
+    },
+    {
+      "path": "scripts/agent-status-report.sh"
+    },
+    {
       "path": "scripts/agent_fault_remind.py"
     },
     {
@@ -1134,13 +1140,25 @@
       "path": "scripts/iwe-grep-secret.sh"
     },
     {
+      "path": "scripts/iwe-multipath.py"
+    },
+    {
+      "path": "scripts/iwe-transcribe.sh"
+    },
+    {
       "path": "scripts/ke-classify.sh"
     },
     {
       "path": "scripts/ke-queue-stats.sh"
     },
     {
+      "path": "scripts/kimi-compaction-watchdog.sh"
+    },
+    {
       "path": "scripts/kimi-peer-adapter.sh"
+    },
+    {
+      "path": "scripts/kimi-session-watchdog.sh"
     },
     {
       "path": "scripts/lesson-close.sh"
@@ -1185,6 +1203,9 @@
       "path": "scripts/post-update-check-skills.sh"
     },
     {
+      "path": "scripts/pre-commit-secret-scan.sh"
+    },
+    {
       "path": "scripts/promote-common.sh"
     },
     {
@@ -1192,6 +1213,9 @@
     },
     {
       "path": "scripts/route-task.sh"
+    },
+    {
+      "path": "scripts/safe-pull.sh"
     },
     {
       "path": "scripts/script-promote.sh"
