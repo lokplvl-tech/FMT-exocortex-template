@@ -86,10 +86,19 @@ Versioning: [Semantic Versioning](https://semver.org/).
 
 
 
+
+
+
+
+
+
+
+
 ## [Unreleased] — обновлено 2026-07-11
 
 ### Added
 
+- `50eeef1` feat(wp-450-ф5): промоция 3 rules-lazy файлов (drift-guard, new-files-guard, wp-stop-list)
 - `695033d` feat(residency-gate): ResidencyGate full implementation
 - `c286e98` feat: promote day-open-pipeline.sh to platform
 - `1d66115` feat(docs): принцип резидентности персональных данных (WP-475 Ф4)
@@ -116,6 +125,7 @@ Versioning: [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- `9f0f31c` docs(changelog): sync Unreleased section — scripts/ delivery fix (#247)
 - `e1c1924` refine(note-review-d6): уточнить текст правила (не существует вместо пуст, дальние сроки → WeekPlan)
 - `0fafee4` docs(changelog): sync Unreleased section — FMT issues #230-246 batch
 - `831a992` docs(pack-creation): синхронизация с WP-474 Ф1-Ф6 — SoTA на Шаге 1.5, Kind/термины, /verify pack [wp474]
