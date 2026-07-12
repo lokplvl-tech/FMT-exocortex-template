@@ -22,7 +22,7 @@ data_needs:
     assert len(needs) == 2
     assert needs[0].type == "2.1"
     assert needs[0].flow_direction == "inbound"
-    assert needs[0].name == "digital-twin"
+    assert needs[0].name == "user-profile"
     assert needs[1].type == "2.2"
     assert needs[1].flow_direction == "outbound"
 
