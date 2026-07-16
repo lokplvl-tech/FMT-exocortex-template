@@ -1,4 +1,5 @@
-files_translated: []
-last_run_utc: '2026-07-16T11:17:35Z'
-last_synced_sha: 63c2ec59f93e7e9f2203a88e3bf89037601ee1dc
+files_translated:
+- SECURITY.md
+last_run_utc: '2026-07-16T11:39:06Z'
+last_synced_sha: 8c9c305c3e3e5d8296e99b433227b48783889640
 schema_version: 1
