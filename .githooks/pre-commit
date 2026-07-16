@@ -176,7 +176,7 @@ if [ -z "${TEMPLATE_DIR:-}" ]; then
   _repo_root=$(git rev-parse --show-toplevel 2>/dev/null || true)
   _env_file="$(dirname "${_repo_root:-}")/.exocortex.env"
   if [ -f "$_env_file" ]; then
-    _td=$(grep '^IWE_TEMPLATE=' "$_env_file" | head -1 | cut -d= -f2-)
+    _td=$(grep '^IWE_TEMPLATE=' "$_env_file" | head -1 | cut -d= -f2- | tr -d '"' | tr -d "'")
     [ -n "${_td:-}" ] && export TEMPLATE_DIR="$_td"
     unset _td
   fi

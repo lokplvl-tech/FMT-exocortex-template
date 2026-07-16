@@ -365,6 +365,18 @@ while IFS='|' read -r fpath fdesc; do
         # Existing file — compare hashes
         LOCAL_HASH=$(hash_file "$SCRIPT_DIR/$fpath")
         REMOTE_HASH=$(hash_file "$REMOTE_FILE")
+        # issue #254: merge-managed файл (3-way merge, напр. CLAUDE.md) законно
+        # расходится с upstream локальными кастомизациями → local≠remote всегда.
+        # Для таких файлов детектор сравнивает base↔remote: upstream не двигался
+        # с последнего merge — «без изменений». Детект по наличию .base-файла.
+        MERGE_BASE="$(dirname "$fpath")/.$(basename "$fpath" | tr '[:upper:]' '[:lower:]').base"
+        if [ -f "$SCRIPT_DIR/$MERGE_BASE" ]; then
+            BASE_HASH=$(hash_file "$SCRIPT_DIR/$MERGE_BASE")
+            if [ "$BASE_HASH" = "$REMOTE_HASH" ]; then
+                UNCHANGED=$((UNCHANGED + 1))
+                continue
+            fi
+        fi
         if [ "$LOCAL_HASH" != "$REMOTE_HASH" ]; then
             DIFF_COUNT=$(diff "$SCRIPT_DIR/$fpath" "$REMOTE_FILE" 2>/dev/null | grep -c '^[<>]' || true); DIFF_COUNT=${DIFF_COUNT:-?}
             UPDATED_FILES+=("$fpath")
@@ -1312,8 +1324,8 @@ fi
 # Раньше использовали $SCRIPT_DIR (FMT) → файла там нет → hint никогда не показывался.
 ENV_FILE="${WORKSPACE_DIR}/.exocortex.env"
 if [ -f "$ENV_FILE" ]; then
-    ENV_WS=$(grep -E '^WORKSPACE_DIR=' "$ENV_FILE" | head -1 | cut -d= -f2-)
-    ENV_GOV=$(grep -E '^GOVERNANCE_REPO=' "$ENV_FILE" | head -1 | cut -d= -f2-)
+    ENV_WS=$(grep -E '^WORKSPACE_DIR=' "$ENV_FILE" | head -1 | cut -d= -f2- | tr -d '"' | tr -d "'")
+    ENV_GOV=$(grep -E '^GOVERNANCE_REPO=' "$ENV_FILE" | head -1 | cut -d= -f2- | tr -d '"' | tr -d "'")
     USER_STRATEGY="${ENV_WS:-}/${ENV_GOV:-DS-strategy}/docs/Strategy.md"
     if [ -f "$USER_STRATEGY" ] && ! grep -qF 'IWE-INITIAL-NEEDED' "$USER_STRATEGY"; then
         if grep -qE '^created: YYYY-MM-DD$|^updated: YYYY-MM-DD$' "$USER_STRATEGY" 2>/dev/null; then
