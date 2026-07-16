@@ -111,21 +111,27 @@ jobs:
               cp "$f" "../en-draft/$f"
             fi
           done
-          # CHANGELOG.md: publish a version index only (release headings,
-          # no entry bodies). Entry bodies are mixed-language and describe
-          # internal pipeline work -- neither belongs in the distribution,
-          # and the published page must carry no pipeline provenance at all
+          # CHANGELOG.md: publish a version index only (bracketed heading,
+          # nothing after it) -- entry bodies are mixed-language and describe
+          # internal pipeline work, neither belongs in the distribution, and
+          # the published page must carry no pipeline provenance at all
           # (pilot decision 2026-07-16). Safe to project: the Version badge
           # only LINKS to this file (static badge), nothing parses it.
+          # Extract just the "## [...]" prefix rather than keep-if-no-Cyrillic:
+          # a whole-line Cyrillic test drops entries whose bracket is clean
+          # English but whose trailing annotation isn't (e.g. the live
+          # "## [Unreleased] -- updated 2026-07-16" heading, caught live
+          # 2026-07-16, review finding), silently losing that version's row.
           python3 - <<'PYEOF'
           import re
 
-          cyr = re.compile(r"[\u0400-\u04FF\u0500-\u052F]")
+          heading = re.compile(r"^## \[[^\]]+\]")
           lines = open("CHANGELOG.md", encoding="utf-8").read().splitlines()
-          versions = [
-              line for line in lines
-              if line.startswith("## [") and not cyr.search(line)
-          ]
+          versions = []
+          for line in lines:
+              match = heading.match(line)
+              if match:
+                  versions.append(match.group(0))
           with open("../en-draft/CHANGELOG.md", "w", encoding="utf-8") as out:
               out.write("\n".join(["# Changelog", ""] + versions) + "\n")
           PYEOF
@@ -142,10 +148,6 @@ jobs:
         # product page, not a projection banner. Lines are removed (not
         # rewritten) and keyed on URLs/paths so retranslation wording can't
         # break the match; every sed is idempotent.
-        # ONTOLOGY.md is bilingual by design (RU term column + EN term
-        # column) — translating it would destroy the RU→EN mapping and
-        # trips the tier-1 glossary check (learned from failed run
-        # 29099359739), so its mentions are dropped rather than published.
         if: always() && steps.en_draft.outcome == 'success'
         run: |
           R="../en-draft/README.md"
@@ -158,9 +160,6 @@ jobs:
             # Hero image: served from the local copy (published verbatim
             # below), not from the RU repo's raw URL.
             sed -i 's|https://raw.githubusercontent.com/TserenTserenov/FMT-exocortex-template/main/docs/assets/orz-cycle.svg|docs/assets/orz-cycle.svg|' "$R"
-            # Docs that exist only on the RU side: drop the referencing lines.
-            sed -i '\|ONTOLOGY.md|d' "$R"
-            sed -i '\|extensions/README.md|d' "$R"
             # Pack deep-links lead to Russian-language repos.
             sed -i '\|github.com/TserenTserenov/PACK-digital-platform|d' "$R"
             # Install command: EN readers fork the EN distribution.
@@ -171,11 +170,39 @@ jobs:
             sed -i 's|https://github.com/TserenTserenov/FMT-exocortex-template/issues|https://github.com/iwesys/IWE/issues|' "$R"
           fi
 
+      - name: Drop links to files this distribution does not ship
+        # ONTOLOGY.md is bilingual by design (RU term column + EN term
+        # column) — translating it would destroy the RU→EN mapping and
+        # trips the tier-1 glossary check (learned from failed run
+        # 29099359739), so it is excluded from category D and never
+        # published; extensions/ is excluded the same way. Any link to
+        # either is a dead link on the EN side regardless of language.
+        # Runs across every published .md, not just README.md: a README-only
+        # version of this step left the same dead links alive in
+        # docs/LEARNING-PATH.md and docs/onboarding/onboarding-guide.md, and
+        # because those files are delta-translated from the (unmodified)
+        # RU source, a same-file manual fix on en-draft does not survive the
+        # next run that touches them (caught live 2026-07-16, review
+        # finding) — the fix has to live in the pipeline, not on the branch.
+        if: always() && steps.en_draft.outcome == 'success'
+        run: |
+          find ../en-draft -name '*.md' -print0 | while IFS= read -r -d '' f; do
+            sed -i '\|ONTOLOGY.md|d' "$f"
+            sed -i '\|extensions/README.md|d' "$f"
+          done
+
       - name: Strip dead Cyrillic anchors from published markdown
         # Anchors slugified from Russian headings do not survive translation
         # (the EN heading produces a different slug), so a URL fragment with
         # Cyrillic is both a dead link and a Cyrillic-gate violation.
-        # Dropping the fragment keeps the file link working on the EN side.
+        # Cross-file links (link.match(2) non-empty) drop just the fragment,
+        # keeping the file link working. Same-page links (empty path before
+        # "#", e.g. a translated TOC entry `[Step 1](#\u0448\u0430\u0433-1-...)`) have no
+        # file to fall back to -- dropping just the fragment would leave a
+        # dangling `]()`, an empty href (caught live 2026-07-16, review
+        # finding: this hits in-page TOCs in SETUP-GUIDE.md, USE-CASES.md,
+        # onboarding-guide.md). For those, drop the link syntax entirely and
+        # keep the visible text -- plain text beats a broken link.
         if: always() && steps.en_draft.outcome == 'success'
         run: |
           python3 - <<'PYEOF'
@@ -183,12 +210,17 @@ jobs:
           import re
 
           link = re.compile(
-              r"(\]\([^)#\s]*)#[^)\s]*[\u0400-\u04FF\u0500-\u052F][^)\s]*(\))"
+              r"\[([^\]]*)\]\(([^)#\s]*)#[^)\s]*[\u0400-\u04FF\u0500-\u052F][^)\s]*\)"
           )
+
+          def fix(match):
+              text, path = match.group(1), match.group(2)
+              return f"[{text}]({path})" if path else text
+
           for path in pathlib.Path("../en-draft").rglob("*.md"):
-              text = path.read_text(encoding="utf-8")
-              cleaned = link.sub(r"\1\2", text)
-              if cleaned != text:
+              content = path.read_text(encoding="utf-8")
+              cleaned = link.sub(fix, content)
+              if cleaned != content:
                   path.write_text(cleaned, encoding="utf-8")
                   print(f"stripped Cyrillic anchors: {path}")
           PYEOF
@@ -321,8 +353,15 @@ jobs:
           # `null`, and `null | any(...)` errors the same way ("Cannot
           # iterate over null") because `any` iterates its input. `(.x // [])`
           # per field defaults each to an empty array before concatenating.
+          #
+          # The path pattern below must mirror on.push.paths above (all 9
+          # entries) -- it originally covered only README.md/docs/, so any
+          # push touching just one of the other 7 files (e.g. a lone
+          # SECURITY.md edit) fell through to the github.actor fallback
+          # instead of attributing the real author (caught live 2026-07-16,
+          # review finding).
           MATCH=$(echo "$COMMITS_JSON" | jq -c \
-            '(. // []) | [.[] | select(((.added // []) + (.modified // []) + (.removed // [])) | any(test("^(README\\.md$|docs/)")))] | last // empty')
+            '(. // []) | [.[] | select(((.added // []) + (.modified // []) + (.removed // [])) | any(test("^(README\\.md$|docs/|CODE_OF_CONDUCT\\.md$|SECURITY\\.md$|PRIVACY\\.md$|LICENSE$|CODEOWNERS$|CITATION\\.cff$|CHANGELOG\\.md$)")))] | last // empty')
           if [ -n "$MATCH" ] && [ "$MATCH" != "null" ]; then
             echo "name=$(echo "$MATCH" | jq -r '.author.name')" >> "$GITHUB_OUTPUT"
             echo "email=$(echo "$MATCH" | jq -r '.author.email')" >> "$GITHUB_OUTPUT"
