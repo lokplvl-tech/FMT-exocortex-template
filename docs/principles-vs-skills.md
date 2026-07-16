@@ -72,7 +72,7 @@ IWE is built according to this hierarchy:
 
 An IWE user does not simply receive tools (Level 3). They receive **methodology** (Level 0-1) and **domain knowledge** (Level 2). These enable the user to generate new skills and adapt to change.
 
-## Connection to Development Formats (МИМ)
+## Connection to Development Formats (MIM)
 
 | Level | What is mastered | Format |
 |-------|-----------------|--------|

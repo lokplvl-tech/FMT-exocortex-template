@@ -1,7 +1,7 @@
 # FMT-exocortex-template Release Process
 
 > Who, when, and how to bump the template version. Goal: a clear "ready to release" criterion
-> instead of a verbal agreement. Source: WP-347 Ф3, 22 May 2026.
+> instead of a verbal agreement. Source: WP-347 F3, 22 May 2026.
 
 ## What "release" means
 

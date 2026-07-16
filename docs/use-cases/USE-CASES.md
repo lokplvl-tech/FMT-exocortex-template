@@ -78,7 +78,7 @@
 - Extraction Report — formalized Pack entities
 - Updated Ontology for knowledge search via Gateway
 
-**How it works:** Type `.заметка text` in TG — within 2 minutes it appears in fleeting-notes.md. During work Sessions, Claude announces Captures. Overnight, the extractor formalizes captures into Pack entities.
+**How it works:** send the bot a note message in TG — within 2 minutes it appears in fleeting-notes.md. During work Sessions, Claude announces Captures. Overnight, the extractor formalizes captures into Pack entities.
 
 ---
 
@@ -230,11 +230,11 @@
 **What you get:**
 - UC Gate passed — promise (SC) defined before work begins
 - IntegrationGate — IWE perimeter, Roles, products, processes defined
-- АрхГейт ≥8 — solution evaluated against ЭМОГССБ
+- ArchGate ≥8 — solution evaluated against the seven architecture characteristics
 - Working service — code, PROCESSES.md, entry in MAP.002
 - Pilot test — verified before merge to production
 
-**How it works:** Work Product from WeekPlan → UC Gate (which SC?) → IntegrationGate (which perimeter?) → АрхГейт (ЭМОГССБ ≥8) → implementation on pilot → test → cherry-pick to production → MAP.002 + PROCESSES.md updated.
+**How it works:** Work Product from WeekPlan → UC Gate (which SC?) → IntegrationGate (which perimeter?) → ArchGate (architecture profile ≥8) → implementation on pilot → test → cherry-pick to production → MAP.002 + PROCESSES.md updated.
 
 ---
 

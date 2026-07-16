@@ -6,7 +6,7 @@
 
 Three blocks were added to `seed/strategy/docs/Strategy.md` (see CHANGELOG `[0.27.0]`):
 
-1. **"Monthly State — Strategic Position Phase"** — 4 phases (Growth / Chaos / Ceiling / Pivot), diagnosis by 5 signals, a playbook for each phase, and transition signals. Source: PD.FORM.078, WP-196 Ф12.1.
+1. **"Monthly State — Strategic Position Phase"** — 4 phases (Growth / Chaos / Ceiling / Pivot), diagnosis by 5 signals, a playbook for each phase, and transition signals. Source: PD.FORM.078, WP-196 F12.1.
 2. **"Personality Caliber"** — gap analysis across 3 dimensions (horizon / bus factor / visibility). Source: PD.CHR.007.
 3. **Source line for the "NEP Triad"** placed before the R1-R{N} table.
 

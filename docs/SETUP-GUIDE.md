@@ -5,7 +5,7 @@
 > Not sure what to change for your platform? → **[PORTABILITY.md](PORTABILITY.md)**
 >
 > **Source-of-truth:** `DP.IWE.002` (Pack). If this file conflicts with Pack — Pack takes Priority.
-> Via Aisystant MCP: `knowledge_search("установка IWE шаблон")`.
+> Via Aisystant MCP: `knowledge_search("IWE template installation")`.
 >
 > **Need a shorter version?** → [QUICK-START.md](QUICK-START.md) (15 minutes, if Git, Node.js, and CLI are already installed). This page covers a full installation from scratch.
 
@@ -277,7 +277,7 @@ MCP (Model Context Protocol) gives Claude Code access to the Platform knowledge 
 Open Claude Code in the exocortex folder and type `/mcp` — servers must have Connected status. Then ask:
 > Find documents about principles
 
-Claude must use `knowledge_search("принципы")` and return a list of documents from the knowledge base.
+Claude must use `knowledge_search("principles")` and return a list of documents from the knowledge base.
 
 **Diagnostics:**
 
@@ -489,7 +489,7 @@ video:
   enabled: true
   directories:
     - ~/Documents/Zoom
-    - ~/Documents/Телемост
+    - ~/Documents/Telemost   # Yandex Telemost (actual folder name is localized)
     # Add your own video recording folders
 ```
 
@@ -500,7 +500,7 @@ video:
 | Application | Typical Path (macOS) |
 |-------------|----------------------|
 | Zoom | `~/Documents/Zoom` |
-| Yandex.Telemost | `~/Documents/Телемост` or `~/Видеозаписи Телемост` |
+| Yandex.Telemost | a localized (Russian-named) folder under `~/Documents` or your home directory |
 | Google Meet | Recordings in Google Drive (not local) |
 | OBS | Configured in OBS → Settings → Output |
 

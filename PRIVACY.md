@@ -4,7 +4,7 @@
 
 ## What Is Collected
 
-The scope depends on your usage tier — from "nothing" (no account) to a full digital twin (profile, goals, self-assessment, git commits) at the top tier. See the per-tier table at [docs/DATA-POLICY.md §1](docs/DATA-POLICY.md#1-какие-данные-собираются).
+The scope depends on your usage tier — from "nothing" (no account) to a full digital twin (profile, goals, self-assessment, git commits) at the top tier. See the per-tier table at [docs/DATA-POLICY.md §1](docs/DATA-POLICY.md).
 
 ## Where Data Goes (opt-in / External Services)
 

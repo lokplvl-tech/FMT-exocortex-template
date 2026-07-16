@@ -16,7 +16,7 @@ Data you place inside your IWE perimeter does not leave it without your explicit
 
 Example: the digital twin in Neon is not part of the perimeter, even if IWE reads it regularly (inbound stream, permitted). Your private git repository is part of the perimeter, because it is the storage location for the IWE tree itself, not a data destination.
 
-> Terminology note: [DATA-POLICY.md §2](DATA-POLICY.md#2-где-хранятся-данные) refers to the server-side of the platform as "IWE (server side)" in one table alongside your personal files. In this document, "IWE" refers only to "your personal instance" — the platform is separate.
+> Terminology note: [DATA-POLICY.md §2](DATA-POLICY.md) refers to the server-side of the platform as "IWE (server side)" in one table alongside your personal files. In this document, "IWE" refers only to "your personal instance" — the platform is separate.
 
 ---
 

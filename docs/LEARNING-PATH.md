@@ -786,7 +786,7 @@ The Strategist is Role R1, executed by Claude Code on a schedule (launchd on mac
 | `archive/` | Completed plans |
 | `exocortex/` | Backup of memory/ + CLAUDE.md |
 
-**Single-source pattern:** DS-strategy (hub) is the sole Registry (`WP-REGISTRY.md` + `inbox/WP-*.md`), aggregated via `scripts/active-wp-sweep.sh`. Hub-and-spoke with WORKPLAN.md was replaced by WP-283 Ф-H (May 2026).
+**Single-source pattern:** DS-strategy (hub) is the sole Registry (`WP-REGISTRY.md` + `inbox/WP-*.md`), aggregated via `scripts/active-wp-sweep.sh`. Hub-and-spoke with WORKPLAN.md was replaced by WP-283 F-H (May 2026).
 
 #### Configuring the Strategy Day
 
@@ -935,7 +935,7 @@ SPF defines the Pack creation process:
 | 10 | Map maintenance | Graph of relationships between entities |
 | 11 | Review and evolution cycle | Continuous update Protocol |
 
-**Quick start:** `/pack-new` — the Skill guides you through domain selection, Pack name, scaffold creation, and shows the Ф1–Ф6 Roadmap.
+**Quick start:** `/pack-new` — the Skill guides you through domain selection, Pack name, scaffold creation, and shows the F1–F6 Roadmap.
 
 **Where to learn more:**
 - [SPF/process/](https://github.com/TserenTserenov/SPF/tree/main/process) — all 11 stages
@@ -1350,18 +1350,18 @@ The Skill guides you through 5 steps:
 2. Defines the Domain via 3 questions (SPF §01)
 3. Proposes 2–3 name options → you choose
 4. Creates the `PACK-{slug}/` structure scaffold + starter files
-5. Shows the Ф1–Ф6 content Roadmap
+5. Shows the F1–F6 content Roadmap
 
 **Roadmap after creation:**
 
 | Phase | What to do | Time |
 |------|-----------|-------|
-| Ф1. Distinctions | 7–10 domain Distinctions (SPF §03) | 1–2h |
-| Ф2. Entities | Roles, WP, Methods — enumeration (SPF §04) | 1–2h |
-| Ф3. Methods | Describe key Methods (SPF §07) | 2–4h |
-| Ф4. Work Products | Artifacts + Definition of Done (SPF §07) | 1–2h |
-| Ф5. Failure modes | 5–10 typical errors (SPF §08) | 1h |
-| Ф6. SoTA | Sources, knowledge version (SPF §09) | 1–2h |
+| F1. Distinctions | 7–10 domain Distinctions (SPF §03) | 1–2h |
+| F2. Entities | Roles, WP, Methods — enumeration (SPF §04) | 1–2h |
+| F3. Methods | Describe key Methods (SPF §07) | 2–4h |
+| F4. Work Products | Artifacts + Definition of Done (SPF §07) | 1–2h |
+| F5. Failure modes | 5–10 typical errors (SPF §08) | 1h |
+| F6. SoTA | Sources, knowledge version (SPF §09) | 1–2h |
 
 Tool for content: `/ke` — captures knowledge into Pack during work.
 
@@ -1415,7 +1415,7 @@ As you grow:  Extractor, Synchronizer, your own Format     ← scaling
 
 ## 11. Quick Reference
 
-> **Architecture FAQ:** Practical questions ("how to do") are here. Domain questions ("what is", "why") are in [DP.IWE.002 §11](../../PACK-digital-platform/pack/digital-platform/02-domain-entities/DP.IWE.002-iwe-template-and-setup.md#11-частые-вопросы-faq) (source of truth for the bot).
+> **Architecture FAQ:** Practical questions ("how to do") are here. Domain questions ("what is", "why") are in [DP.IWE.002 §11](../../PACK-digital-platform/pack/digital-platform/02-domain-entities/DP.IWE.002-iwe-template-and-setup.md) (source of truth for the bot).
 
 ### Protocols and Workflow
 
@@ -1461,9 +1461,9 @@ As you grow:  Extractor, Synchronizer, your own Format     ← scaling
 | Where is my Digital Twin? | Bot → `/twin` | § 2.6 |
 | How to join the club? | [systemsworld.club](https://systemsworld.club) | § 2.6 |
 | What are FPF, SPF, ZP? | Three levels of principles: ZP → FPF → SPF → Pack. Each generates the next | § 3.1 |
-| What can the bot do? | Marathon, Feed, Consultation, Notes, /twin, /profile | [DP.IWE.002 §11](../../PACK-digital-platform/pack/digital-platform/02-domain-entities/DP.IWE.002-iwe-template-and-setup.md#бот-и-профиль) |
-| What is my tier? | `/twin` or `/profile` in the bot. T0–T4, determined automatically | [DP.IWE.002 §11](../../PACK-digital-platform/pack/digital-platform/02-domain-entities/DP.IWE.002-iwe-template-and-setup.md#бот-и-профиль) |
-| How to use notes? | `.text` in bot → accumulate → Note-Review → routing | [DP.IWE.002 §11](../../PACK-digital-platform/pack/digital-platform/02-domain-entities/DP.IWE.002-iwe-template-and-setup.md#заметки) |
+| What can the bot do? | Marathon, Feed, Consultation, Notes, /twin, /profile | [DP.IWE.002 §11](../../PACK-digital-platform/pack/digital-platform/02-domain-entities/DP.IWE.002-iwe-template-and-setup.md) |
+| What is my tier? | `/twin` or `/profile` in the bot. T0–T4, determined automatically | [DP.IWE.002 §11](../../PACK-digital-platform/pack/digital-platform/02-domain-entities/DP.IWE.002-iwe-template-and-setup.md) |
+| How to use notes? | `.text` in bot → accumulate → Note-Review → routing | [DP.IWE.002 §11](../../PACK-digital-platform/pack/digital-platform/02-domain-entities/DP.IWE.002-iwe-template-and-setup.md) |
 | How to set up IWE on Windows? | WSL + VS Code. Files in ~/IWE/ (WSL), not /mnt/c/ | § 11 "Windows + WSL" |
 
 ### Common Problems and Solutions

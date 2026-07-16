@@ -109,4 +109,4 @@ The `.stignore` file is already included in the template — it will appear auto
 
 ---
 
-*Created: 2026-04-28 | WP-5 Ф-N artifact #4 | [FMT-exocortex-template](https://github.com/TserenTserenov/FMT-exocortex-template)*
+*Created: 2026-04-28 | WP-5 F-N artifact #4*

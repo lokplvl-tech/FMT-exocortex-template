@@ -2,7 +2,7 @@
 
 **Status:** Accepted (specification)
 **Date:** 2026-03-29
-**Context:** WP-180 Ф4, FMT-exocortex-template, DP.EXOCORTEX.001
+**Context:** WP-180 F4, FMT-exocortex-template, DP.EXOCORTEX.001
 
 ---
 
@@ -21,7 +21,7 @@ IWE is currently available only via Git+CLI: `gh repo fork` → `bash setup.sh`.
 
 1. **Entry barrier.** Git + CLI + fork + setup.sh ≈ 30–60 min for a beginner, with a risk of errors.
 2. **No managed onboarding.** setup.sh asks 7 questions at once — no gradual entry.
-3. **No lossless updates** (resolved in Ф0.5–Ф1, but only for CLI users).
+3. **No lossless updates** (resolved in F0.5–F1, but only for CLI users).
 
 ## Solution
 
@@ -105,7 +105,7 @@ cd ~/IWE/my-exocortex && bash setup.sh --level=T4
 
 This guarantees vendor lock-in = 0.
 
-### Scenario С6: VM image (from abcdef0101 feedback)
+### Scenario C6: VM image (from abcdef0101 feedback)
 
 ```bash
 vagrant up  # downloads Ubuntu + tmux + Claude Code + IWE T1 image
@@ -118,8 +118,8 @@ The Vagrant image is the third delivery method (for a DevOps audience and testin
 
 | # | Artifact | Level | Dependency |
 |---|----------|-------|------------|
-| 1 | `setup.sh --yes` — non-interactive mode | Platform | WP-180 Ф4 ✅ (`--level` added) |
-| 2 | `setup.sh --level=TX` — level upgrade | Platform | WP-180 Ф4 ✅ |
+| 1 | `setup.sh --yes` — non-interactive mode | Platform | WP-180 F4 ✅ (`--level` added) |
+| 2 | `setup.sh --level=TX` — level upgrade | Platform | WP-180 F4 ✅ |
 | 3 | Web interface (chat → onboarding agent) | Hosting | WP-189 (MCP) |
 | 4 | Hosting API (POST /setup, POST /update, GET /export) | Hosting | Separate WP |
 | 5 | Vagrant image | Delivery | Separate WP |

@@ -56,7 +56,7 @@ The Skill will guide you through the steps:
 | 2 | Proposes 2-3 name options + a short code → you choose; the name is provisional and is finalized after the first Distinctions |
 | 3 | Fills in the Bounded Context; terms go into `ontology.md`, the Kind decision (the entity type of the core concept) goes into `.pfad-decision.md` |
 | 4 | Creates the `PACK-{slug}/` structure with starter files (including the decision record and SoTA sheet) |
-| 5 | Shows the Ф1-Ф6 content Roadmap + recommends `/verify pack` (baseline Assessment across 11 adequacy dimensions) |
+| 5 | Shows the F1-F6 content Roadmap + recommends `/verify pack` (baseline Assessment across 11 adequacy dimensions) |
 
 ---
 
@@ -100,7 +100,7 @@ Template: [SPF/pack-template](https://github.com/TserenTserenov/SPF/tree/main/pa
 
 ---
 
-## What to Do After Creation: the Ф1-Ф6 Roadmap
+## What to Do After Creation: the F1-F6 Roadmap
 
 A Pack is not filled in one sitting. Content grows iteratively.
 
@@ -108,14 +108,14 @@ A Pack is not filled in one sitting. Content grows iteratively.
 
 | Phase | File | Purpose | Time | Priority |
 |-------|------|---------|------|----------|
-| **Ф1. Distinctions** | `01B-distinctions.md` | 7-10 "X ≠ Y" pairs for the Domain (FPF A.7) | 1-2h | First — without it, everything else is unreliable |
-| **Ф2. Entities** | `02-domain-entities/` | Roles, WPs, Methods — listing only | 1-2h | Second — provides the map |
-| **Ф3. Methods** | `03-methods/` | Inputs, outputs, quality criteria | 2-4h | Third — the core of the Pack |
-| **Ф4. Work Products** | `04-work-products/` | Artifacts + Definition of Done | 1-2h | Fourth |
-| **Ф5. Failure modes** | `05-failure-modes/` | 5-10 FMs: cause + signal | 1h | High value, often skipped |
-| **Ф6. SoTA — expansion** | `06-sota/` | Deepen sources beyond the starter SoTA sheet (the first source is collected at Step 1.5 of pack-new) | 1-2h | Last; the starter source already exists |
+| **F1. Distinctions** | `01B-distinctions.md` | 7-10 "X ≠ Y" pairs for the Domain (FPF A.7) | 1-2h | First — without it, everything else is unreliable |
+| **F2. Entities** | `02-domain-entities/` | Roles, WPs, Methods — listing only | 1-2h | Second — provides the map |
+| **F3. Methods** | `03-methods/` | Inputs, outputs, quality criteria | 2-4h | Third — the core of the Pack |
+| **F4. Work Products** | `04-work-products/` | Artifacts + Definition of Done | 1-2h | Fourth |
+| **F5. Failure modes** | `05-failure-modes/` | 5-10 FMs: cause + signal | 1h | High value, often skipped |
+| **F6. SoTA — expansion** | `06-sota/` | Deepen sources beyond the starter SoTA sheet (the first source is collected at Step 1.5 of pack-new) | 1-2h | Last; the starter source already exists |
 
-**Principle:** start with Ф1 (Distinctions). Even the first 5 Distinctions add value — Claude stops confusing Domain terms.
+**Principle:** start with F1 (Distinctions). Even the first 5 Distinctions add value — Claude stops confusing Domain terms.
 
 ---
 

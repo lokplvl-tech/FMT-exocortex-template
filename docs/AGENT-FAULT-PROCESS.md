@@ -1,6 +1,6 @@
 ---
 description: How to capture, synchronize, and use memory about recurring agent errors
-name: Процесс учёта косяков агента (Agent Fault Profile)
+name: Agent Fault Profile process
 owner: user
 schema_version: 1
 status: draft

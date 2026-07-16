@@ -169,7 +169,7 @@ theme: default
 
 | Type | What it is | Examples |
 |------|-----------|---------|
-| **Protocols** | You follow step-by-step | ОРЗ, АрхГейт, Day Open/Close |
+| **Protocols** | You follow step-by-step | ORZ, ArchGate, Day Open/Close |
 | **Skills** | You build through practice | Capture, Self-correction, Distinctions |
 | **Formats** | You apply a standard structure | Pack structure, WP-context |
 
@@ -236,7 +236,7 @@ theme: default
 | Problem | IWE Component | How |
 |---------|--------------|-----|
 | Knowledge gets lost | **Thinking Core** (exocortex + Pack) | Every unit of Knowledge has its place. History in GitHub |
-| Plans do not work | **Work Culture** (ОРЗ rituals) | Plan in the morning, results in the evening, weekly Review |
+| Plans do not work | **Work Culture** (ORZ rituals) | Plan in the morning, results in the evening, weekly Review |
 | AI does not help | **Core + culture** (Claude Code + exocortex) | Reads YOUR files, knows YOUR goals, remembers YOUR history |
 
 ---
@@ -365,7 +365,7 @@ The path to connecting IWE — add components as you need them:
 | Stage | What you connect | What you get |
 |-------|----------------|--------------|
 | **Stage 1** | Claude Code + exocortex | An AI assistant that remembers you |
-| **Stage 2** | + ОРЗ rituals | Structured work |
+| **Stage 2** | + ORZ rituals | Structured work |
 | **Stage 3** | + Pack + bot | Knowledge base + mobile access |
 | **Stage 4** | + roles + automation | AI agents work independently |
 
@@ -407,7 +407,7 @@ The path to connecting IWE — add components as you need them:
 | Theory | What it provides | Where in IWE |
 |--------|----------------|--------------|
 | **Systems Thinking** | See the whole, not just the parts | Planning, Distinctions |
-| **Methodology** | Method descriptions, Work Products | ОРЗ, formats, Pack |
+| **Methodology** | Method descriptions, Work Products | ORZ, formats, Pack |
 | **Management** | Roles, leadership, strategizing | Roles, strategic sessions |
 | **Enterprise engineering** | How organizations are structured | Architecture, integrations |
 

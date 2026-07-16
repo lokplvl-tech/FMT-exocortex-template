@@ -1,7 +1,7 @@
 # IWE Web Onboarding v2: Instructions for AI
 
 > **Audience:** AI (Claude, GPT, etc.) operating through a web interface (claude.ai, ChatGPT, Cursor).
-> **Source-of-truth:** DP.ARCH.002 §2б (two axes), DP.SC.168 (Onboarding), DP.SC.119 (Workspace).
+> **Source-of-truth:** DP.ARCH.002 §2b (two axes), DP.SC.168 (Onboarding), DP.SC.119 (Workspace).
 > **Version:** 2 (2026-06-05) — rewritten for two axes, freemium, pull model.
 
 ---
@@ -273,5 +273,5 @@ Roles work in any MCP client. Details: `.claude/rules/role-prefixes.md`.
 
 ---
 
-*Version 2 (2026-06-05). Two onboarding axes, freemium, pull model. Source: F23-onboarding-design.md v3 + DP.ARCH.002 §2б + DP.SC.168.*
+*Version 2 (2026-06-05). Two onboarding axes, freemium, pull model. Source: F23-onboarding-design.md v3 + DP.ARCH.002 §2b + DP.SC.168.*
 

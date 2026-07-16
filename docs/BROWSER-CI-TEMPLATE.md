@@ -34,9 +34,9 @@ Do not suggest skills more than once every 5 turns. If the user declines, do not
 
 - Respond in Russian unless the user writes in English.
 - Use everyday language first, technical terms in parentheses after their Russian description.
-- Avoid jargon: "задеплоим" → "развернём", "зафейлилось" → "упало".
+- Avoid jargon: plain verbs a non-developer understands ("rolled out", not dev slang).
 - Keep it concise: up to 7 bullet points, one screen per response.
-- Active voice: "я нашёл", not «было обнаружено».
+- Active voice: "I found", not "it was discovered".
 
 ## Available MCP Tools
 

@@ -13,7 +13,7 @@
 | `changelog-flush.sh` | `scripts/changelog-flush.sh` | renames [Unreleased] → a specific version in CHANGELOG.md |
 | `check-dirty-repos.sh` | `scripts/check-dirty-repos.sh` | Scan all IWE repos for uncommitted changes |
 | `check-index-health.py` | `.claude/scripts/check-index-health.py` | Bloated index file detector. |
-| `check-open-sessions.sh` | `scripts/check-open-sessions.sh` | WP-358 Ф10 — detector for unclosed external sessions. |
+| `check-open-sessions.sh` | `scripts/check-open-sessions.sh` | WP-358 F10 — detector for unclosed external sessions. |
 | `check-script-collisions.sh` | `scripts/check-script-collisions.sh` | check for script collisions between the author zone and the FMT template. |
 | `check-setup-update-parity.sh` | `scripts/check-setup-update-parity.sh` | static analysis of paired scripts |
 | `claude-peer-adapter.sh` | `scripts/claude-peer-adapter.sh` | Claude adapter for peer-conversation (Peer partner role) |
@@ -40,16 +40,16 @@
 | `lesson-close.sh` | `scripts/lesson-close.sh` | close a lesson in the daily file (lesson/<date>.md) |
 | `load-extensions.sh` | `.claude/scripts/load-extensions.sh` | unified loader for suffix extensions (R4.4 fix, WP-273 Stage 2). |
 | `memory-active-wp-update.sh` | `scripts/memory-active-wp-update.sh` | update the "Active Work Products" section in MEMORY.md |
-| `memory-bleed.sh` | `scripts/memory-bleed.sh` | detector for memory/ violations (WP-217 Ф10.2) |
-| `memory-health.sh` | `scripts/memory-health.sh` | memory/ health metrics (WP-217 Ф10.2) |
-| `memory-migrate.sh` | `scripts/memory-migrate.sh` | add missing frontmatter fields (WP-217 Ф10.2/Ф10.4) |
-| `memory-validate.sh` | `scripts/memory-validate.sh` | validate frontmatter in memory/*.md (WP-217 Ф10.2) |
+| `memory-bleed.sh` | `scripts/memory-bleed.sh` | detector for memory/ violations (WP-217 F10.2) |
+| `memory-health.sh` | `scripts/memory-health.sh` | memory/ health metrics (WP-217 F10.2) |
+| `memory-migrate.sh` | `scripts/memory-migrate.sh` | add missing frontmatter fields (WP-217 F10.2/F10.4) |
+| `memory-validate.sh` | `scripts/memory-validate.sh` | validate frontmatter in memory/*.md (WP-217 F10.2) |
 | `migrate-initial-marker.sh` | `scripts/migrate-initial-marker.sh` | add skeleton marker IWE-INITIAL-NEEDED to Strategy.md |
 | `migrate-skills-to-v2.sh` | `scripts/migrate-skills-to-v2.sh` | migrate existing skills to the SKILL.md v2 standard |
 | `migrate-to-runtime-target.sh` | `scripts/migrate-to-runtime-target.sh` | migrate from a dirty FMT (≤0.28.x) to Generated runtime (≥0.29.0). |
 | `pack-ci-install.sh` | `scripts/pack-ci-install.sh` | Installs the CI guard (ID collision detector) in all Pack repos under ~/IWE/ |
 | `pending-phases-sweep.sh` | `scripts/pending-phases-sweep.sh` | scans active WP context files and outputs pending phases |
-| `post-update-check-skills.sh` | `scripts/post-update-check-skills.sh` | post-update detector for SKILL.md routing blocks (WP-350 Ф18) |
+| `post-update-check-skills.sh` | `scripts/post-update-check-skills.sh` | post-update detector for SKILL.md routing blocks (WP-350 F18) |
 | `promote-common.sh` | `scripts/promote-common.sh` | shared library for promote scripts |
 | `restore-from-exocortex.sh` | `scripts/restore-from-exocortex.sh` | restore IWE memory from an exocortex Backup (closes #125) |
 | `route-task.sh` | `scripts/route-task.sh` | IWE task router (DP.ROLE.059) |
@@ -62,12 +62,12 @@
 | `skills-pull.sh` | `scripts/skills-pull.sh` | sync L1 skills from FMT to personal IWE |
 | `smoke-clean-env.sh` | `scripts/smoke-clean-env.sh` | Smoke test for new scripts/*.sh in FMT. see WP-347 PD-1. |
 | `staging-audit.sh` | `scripts/staging-audit.sh` | B12e Decay drift detector in STAGING.md |
-| `style-check-post-run.sh` | `scripts/style-check-post-run.sh` | Kimi response style check after a peer session (WP-388 Ф9) |
+| `style-check-post-run.sh` | `scripts/style-check-post-run.sh` | Kimi response style check after a peer session (WP-388 F9) |
 | `style-promote.sh` | `scripts/style-promote.sh` | promote a style snapshot file to the IWE platform Template |
 | `sync-agent-instructions.sh` | `scripts/sync-agent-instructions.sh` | generate AGENTS.md from the unified CLAUDE.md core + agent-blocks |
 | `sync-version-badge.sh` | `scripts/sync-version-badge.sh` | sync the version badge in README.md with CHANGELOG.md |
 | `template-sync.sh` | `scripts/template-sync.sh` | sync CLAUDE.md from the author IWE to FMT-exocortex-template |
-| `test-route-task.sh` | `scripts/test-route-task.sh` | 10 test cases for route-task.sh (WP-350 Ф14) |
+| `test-route-task.sh` | `scripts/test-route-task.sh` | 10 test cases for route-task.sh (WP-350 F14) |
 | `validate-fmt-scripts.sh` | `scripts/validate-fmt-scripts.sh` | check FMT for personal hardcodes and convention violations |
 | `validate-skill.sh` | `scripts/validate-skill.sh` | validate SKILL.md v2 (pre-promote checklist) |
 | `verify-manifest.sh` | `scripts/verify-manifest.sh` | verify that update-manifest.json is synchronized with the git tree. |
