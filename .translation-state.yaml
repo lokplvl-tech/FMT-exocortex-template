@@ -1,4 +1,5 @@
-files_translated: []
-last_run_utc: '2026-07-16T05:10:37Z'
-last_synced_sha: 387dd7726f797dee00ed7a926f1cdf96bb4ddf88
+files_translated:
+- docs/DATA-POLICY.md
+last_run_utc: '2026-07-16T05:42:42Z'
+last_synced_sha: a5697c3c4455e721e1ebc19c0bba0803089c486a
 schema_version: 1
