@@ -1,5 +1,6 @@
 """ResidencyGate consent controller - Point A (activation) and Point B (lazy)."""
 
+import warnings
 from pathlib import Path
 from typing import Dict, List, Tuple, Optional, Callable
 
@@ -64,16 +65,18 @@ class ResidencyGate:
         return self._pre_grant_entries
 
     def mark_pre_granted(self, function_id: str) -> None:
-        """Register a function as pre-granted programmatically (tests / embedders).
+        """Deprecated no-op: programmatic self-marking is no longer honored.
 
-        The durable source is pre-grant.yaml; this in-memory supplement carries
-        the caller's own pilot approval and follows the same inbound-only rule.
+        Pre-grant comes only from the pilot-approved pre-grant.yaml (WP-476 F1
+        condition 6). Kept callable so pre-2026-07-16 consumers don't crash on
+        repo-version skew; it grants nothing.
         """
-        self._pre_grants()[function_id] = {
-            "function_id": function_id,
-            "approved_by": "pilot",
-            "approved_at": "runtime",
-        }
+        warnings.warn(
+            f"mark_pre_granted('{function_id}') is a no-op — add the function to "
+            f"pre-grant.yaml with explicit pilot approval instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
 
     def _is_pre_granted(self, function_id: str, need: DataNeed) -> bool:
         """Pre-grant applies only to inbound flows explicitly listed by the pilot.

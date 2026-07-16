@@ -109,6 +109,22 @@ pre_granted:
         assert state.get_consent("fn", unlisted.key())["status"] == "not_asked"
 
 
+def test_mark_pre_granted_is_noop():
+    """Programmatic self-marking must grant nothing (WP-476 F1 condition 6)."""
+    import warnings as w
+    with tempfile.TemporaryDirectory() as tmp:
+        state = ResidencyState(str(Path(tmp) / "data-residency.yaml"))
+        gate = ResidencyGate(state_manager=state, pre_grant_file=Path(tmp) / "absent.yaml")
+        with w.catch_warnings(record=True) as caught:
+            w.simplefilter("always")
+            gate.mark_pre_granted("self-marking-consumer")
+            assert any(issubclass(c.category, DeprecationWarning) for c in caught)
+        need = DataNeed(name="a", type="2.1", flow_direction="inbound", schema_version=1)
+        allowed, blocking = gate.check_activation("self-marking-consumer", [need])
+        assert not allowed
+        assert state.get_consent("self-marking-consumer", need.key())["status"] == "not_asked"
+
+
 def test_shipped_pre_grant_file_is_valid():
     """The pre-grant.yaml shipped with the template must always validate."""
     shipped = Path(__file__).parent.parent / "pre-grant.yaml"
@@ -123,5 +139,6 @@ if __name__ == "__main__":
     test_missing_file_means_nothing_pre_granted()
     test_pre_grant_auto_grants_inbound_only()
     test_needs_narrowing()
+    test_mark_pre_granted_is_noop()
     test_shipped_pre_grant_file_is_valid()
     print("✓ All tests passed")
