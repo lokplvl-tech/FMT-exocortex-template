@@ -95,8 +95,8 @@ jobs:
           set -e
           # rc=2 is ASCII-guard warnings only: en-draft is a human-review
           # staging branch, so leftover Cyrillic stays visible in the log
-          # and in delivery checks; the hard no-Cyrillic gate belongs to
-          # the iwesys publish stage (Phase V4), not to this sync.
+          # and in delivery checks; the hard no-Cyrillic gate lives in the
+          # publish-to-iwesys job below ("Cyrillic gate" step).
           if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ]; then exit "$rc"; fi
 
       - name: Copy verbatim (non-translated) files to en-draft
@@ -108,11 +108,30 @@ jobs:
         # mistranslating a technical log, while fixing the Version badge on iwesys.
         if: always() && steps.en_draft.outcome == 'success'
         run: |
-          for f in LICENSE CODEOWNERS CITATION.cff CHANGELOG.md; do
+          for f in LICENSE CODEOWNERS CITATION.cff; do
             if [ -f "$f" ]; then
               cp "$f" "../en-draft/$f"
             fi
           done
+          # CHANGELOG.md is mixed-language (RU entry lines under EN version
+          # headings), and the Cyrillic gate in publish-to-iwesys rejects any
+          # Cyrillic — so publish an English-only projection instead of a
+          # verbatim copy. Safe to filter: the Version badge only LINKS to
+          # this file (static badge), nothing parses its content.
+          python3 - <<'PYEOF'
+          import re
+
+          cyr = re.compile(r"[\u0400-\u04FF\u0500-\u052F]")
+          lines = open("CHANGELOG.md", encoding="utf-8").read().splitlines()
+          note = [
+              "> English-only projection of the changelog: entries written",
+              "> in Russian are omitted by the publishing pipeline.",
+              "",
+          ]
+          kept = [line for line in lines if not cyr.search(line)]
+          with open("../en-draft/CHANGELOG.md", "w", encoding="utf-8") as out:
+              out.write("\n".join(note + kept) + "\n")
+          PYEOF
           # Hero image for the README: published locally so the EN page
           # does not fetch assets from the RU repo (WP-401 Ф5, 2026-07-10).
           if [ -f "docs/assets/orz-cycle.svg" ]; then
@@ -154,6 +173,28 @@ jobs:
             sed -i 's|https://github.com/TserenTserenov/FMT-exocortex-template/discussions|https://github.com/iwesys/IWE/discussions|' "$R"
             sed -i 's|https://github.com/TserenTserenov/FMT-exocortex-template/issues|https://github.com/iwesys/IWE/issues|' "$R"
           fi
+
+      - name: Strip dead Cyrillic anchors from published markdown
+        # Anchors slugified from Russian headings do not survive translation
+        # (the EN heading produces a different slug), so a URL fragment with
+        # Cyrillic is both a dead link and a Cyrillic-gate violation.
+        # Dropping the fragment keeps the file link working on the EN side.
+        if: always() && steps.en_draft.outcome == 'success'
+        run: |
+          python3 - <<'PYEOF'
+          import pathlib
+          import re
+
+          link = re.compile(
+              r"(\]\([^)#\s]*)#[^)\s]*[\u0400-\u04FF\u0500-\u052F][^)\s]*(\))"
+          )
+          for path in pathlib.Path("../en-draft").rglob("*.md"):
+              text = path.read_text(encoding="utf-8")
+              cleaned = link.sub(r"\1\2", text)
+              if cleaned != text:
+                  path.write_text(cleaned, encoding="utf-8")
+                  print(f"stripped Cyrillic anchors: {path}")
+          PYEOF
 
       - name: Write EN-side community files to en-draft
         # Feedback lives on iwesys/IWE itself (pilot decision 2026-07-10):
@@ -351,6 +392,61 @@ jobs:
           # below (same host, different repo), so the push authenticates
           # as github-actions[bot] instead of the app and gets a 403.
           persist-credentials: false
+
+      - name: "Cyrillic gate: block any Cyrillic from reaching iwesys"
+        # Hard boundary (WP-415 Phase V): the public EN distribution must
+        # contain no Cyrillic at all — file contents, file names, or commit
+        # author identity. en-draft (staging) may hold translation leftovers
+        # for human review; this gate is what keeps them out of iwesys.
+        # No bypass flag on purpose: fix the content (en-draft or source),
+        # then re-run the workflow.
+        env:
+          AUTHOR_NAME: ${{ needs.sync.outputs.author_name }}
+          AUTHOR_EMAIL: ${{ needs.sync.outputs.author_email }}
+        run: |
+          python3 - <<'PYEOF'
+          import os
+          import re
+          import subprocess
+          import sys
+
+          cyr = re.compile(r"[\u0400-\u04FF\u0500-\u052F]")
+          offences = []
+
+          for var in ("AUTHOR_NAME", "AUTHOR_EMAIL"):
+              value = os.environ.get(var, "")
+              if cyr.search(value):
+                  offences.append(f"commit {var.lower()}: {value!r}")
+
+          listing = subprocess.run(
+              ["git", "ls-files", "-z"], capture_output=True, check=True
+          )
+          for path in filter(None, listing.stdout.decode("utf-8").split("\0")):
+              if cyr.search(path):
+                  offences.append(f"{path}: Cyrillic in file name")
+              try:
+                  with open(path, encoding="utf-8") as handle:
+                      text = handle.read()
+              except (UnicodeDecodeError, OSError):
+                  continue  # binary or unreadable: file name checked above
+              hits = [
+                  (number, line)
+                  for number, line in enumerate(text.splitlines(), 1)
+                  if cyr.search(line)
+              ]
+              if hits:
+                  number, line = hits[0]
+                  offences.append(
+                      f"{path}: {len(hits)} line(s) with Cyrillic,"
+                      f" first at {number}: {line.strip()[:100]}"
+                  )
+
+          if offences:
+              for offence in offences:
+                  print(f"::error::Cyrillic gate: {offence}")
+              sys.exit(1)
+          print("Cyrillic gate: tree is clean.")
+          PYEOF
 
       - name: Check target repo exists
         id: target_check
