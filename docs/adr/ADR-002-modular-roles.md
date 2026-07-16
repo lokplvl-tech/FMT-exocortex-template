@@ -88,7 +88,6 @@ Rationale:
 
 **Documentation:**
 - `roles/README.md` — "How to add a role" section rewritten
-- `ONTOLOGY.md` — reference to ROLE-CONTRACT.md added
 - `docs/LEARNING-PATH.md` — §7.4 "Role Contract"
 - `DP.ROLE.001` (Pack) — note on role contract in the template
 - `DP.D.033` (Pack) — §8 "Role modularity as a consequence"

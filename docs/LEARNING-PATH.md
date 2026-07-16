@@ -202,7 +202,6 @@ FMT-exocortex-template/
 ├── CLAUDE.md                        # Rules for Claude Code
 ├── README.md                        # Quick start
 ├── REPO-TYPE.md                     # Repository type (Format)
-├── ONTOLOGY.md                      # Exocortex Ontology
 ├── update.sh                        # Update from upstream
 │
 ├── memory/                          # Working memory (≤10 files)
