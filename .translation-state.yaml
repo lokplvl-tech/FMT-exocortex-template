@@ -1,4 +1,5 @@
-files_translated: []
-last_run_utc: '2026-07-16T05:49:09Z'
-last_synced_sha: dd273fdece1b9ffc17ac4f4a5214e1aeeddcc913
+files_translated:
+- docs/DATA-RESIDENCY.md
+last_run_utc: '2026-07-16T11:11:32Z'
+last_synced_sha: 58b86025a2a247e7c8e3f21f085a0c8cc00f8e3c
 schema_version: 1
