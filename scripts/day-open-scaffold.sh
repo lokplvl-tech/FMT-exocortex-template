@@ -439,6 +439,24 @@ run_bounded() {
   rm -f "$out_file"
 }
 
+# iwe_repo_dirs — печатает поддиректории с .git, дедуплицированные по реальному
+# физическому пути. Без этого repo-symlink алиас (напр. legacy-имя репозитория,
+# оставленное как compat-шим после переименования) считается отдельным репозиторием
+# наравне с оригиналом — двойные строки в таблицах активности, завышенный вдвое
+# счётчик коммитов в «Итогах вчера» (найдено 2026-07-17).
+iwe_repo_dirs() {
+  local repo real seen=""
+  for repo in "$@"; do
+    [ -d "$repo/.git" ] || continue
+    real=$(cd -P "$repo" 2>/dev/null && pwd) || continue
+    case " $seen " in
+      *" $real "*) continue ;;
+    esac
+    seen="$seen $real"
+    echo "$repo"
+  done
+}
+
 # --- Section: Новые задачи в репозиториях (issue sweep, 2 дня) ---
 # Сигнальный канал из day-open/SKILL.md:54 (раньше был только в спеке, не в коде).
 # Ленивый: кэш 1ч + fallback при недоступности gh — не ломает pipeline (требование peer-сессии 2026-06-04-32).
@@ -464,8 +482,7 @@ render_repo_issues() {
   since=$(date -v-2d +%Y-%m-%d 2>/dev/null || date -d "2 days ago" +%Y-%m-%d 2>/dev/null)
   [ -z "$since" ] && { echo "_не удалось вычислить дату фильтра — пропуск._"; return; }
   local out="" any=0 repo slug rows stale_count stale_url
-  for repo in "$IWE"/*/; do
-    [ -d "${repo}.git" ] || continue
+  while IFS= read -r repo; do
     git -C "$repo" remote get-url origin 2>/dev/null | grep -qi github || continue
     slug=$(basename "$repo")
     # New issues (last 2 days)
@@ -488,7 +505,7 @@ render_repo_issues() {
       out="${out}\n⚠️ **${slug}:** ${stale_count} старых issues без движения → [открыть фильтр](${stale_url})\n"
       any=1
     fi
-  done
+  done < <(iwe_repo_dirs "$IWE"/*/)
   if [ "$any" = "1" ]; then
     printf "%b" "$out" | tee "$cache"
   else
@@ -504,15 +521,14 @@ render_repo_activity() {
   since=$(date -v-2d +%Y-%m-%d 2>/dev/null || date -d "2 days ago" +%Y-%m-%d 2>/dev/null)
   [ -z "$since" ] && { echo "_не удалось вычислить дату фильтра — пропуск._"; return; }
   out="| Репозиторий | Коммитов (2д) | Последний |\n|---|---|---|\n"
-  for repo in "$IWE"/*/; do
-    [ -d "${repo}.git" ] || continue
+  while IFS= read -r repo; do
     slug=$(basename "$repo")
     n=$(git -C "$repo" log --since="$since 00:00:00" --oneline 2>/dev/null | wc -l | tr -d ' ')
     [ "${n:-0}" -eq 0 ] && continue
     last=$(git -C "$repo" log -1 --format='%s' 2>/dev/null | cut -c1-50)
     out="${out}| ${slug} | ${n} | ${last} |\n"
     any=1
-  done
+  done < <(iwe_repo_dirs "$IWE"/*/)
   if [ "$any" = "1" ]; then
     printf "%b" "$out"
   else
@@ -908,15 +924,14 @@ render_attention() {
 # --- Section: Итоги вчера (commits stats + sessions) ---
 render_yesterday() {
   local total=0 repos=0
-  for repo in "$IWE"/*/; do
-    [ -d "$repo/.git" ] || continue
+  while IFS= read -r repo; do
     local n
     n=$(git -C "$repo" log --since="$YDAY 00:00" --until="$YDAY 23:59" --oneline 2>/dev/null | wc -l | tr -d ' ')
     if [ "$n" -gt 0 ]; then
       total=$((total + n))
       repos=$((repos + 1))
     fi
-  done
+  done < <(iwe_repo_dirs "$IWE"/*/)
   # "РП закрыто" needs a real Day Close as its source. If yesterday's close isn't
   # committed, the LLM has no ground truth and invents a count (2026-07-01: "10 закрыто"
   # was pure hallucination). Detect the close deterministically; only defer to the LLM
