@@ -1224,6 +1224,9 @@
       "path": "scripts/create-wp.sh"
     },
     {
+      "path": "scripts/day-close-lock.sh"
+    },
+    {
       "path": "scripts/day-close-prepare.sh"
     },
     {
@@ -1332,6 +1335,9 @@
       "path": "scripts/ke-queue-stats.sh"
     },
     {
+      "path": "scripts/kimi-auto-heartbeat.sh"
+    },
+    {
       "path": "scripts/kimi-compaction-watchdog.sh"
     },
     {
@@ -1339,6 +1345,12 @@
     },
     {
       "path": "scripts/kimi-session-watchdog.sh"
+    },
+    {
+      "path": "scripts/kimi-standalone-preflight.sh"
+    },
+    {
+      "path": "scripts/kimi-whisper-safe.sh"
     },
     {
       "path": "scripts/lesson-close.sh"
