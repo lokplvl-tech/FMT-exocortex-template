@@ -107,10 +107,14 @@ Versioning: [Semantic Versioning](https://semver.org/).
 
 
 
+
+
+
 ## [Unreleased] — обновлено 2026-07-19
 
 ### Added
 
+- `4484b4c` feat(skill-promote): защита L3-констант через inline-маркер (WP-5)
 - `5aabac2` feat(wp483): sync guide-kit v0.1.1 into template
 
 ### Changed

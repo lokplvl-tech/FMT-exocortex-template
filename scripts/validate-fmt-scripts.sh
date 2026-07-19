@@ -167,6 +167,10 @@ if [[ "$MODE" != "scripts" && "$MODE" != "settings-json" ]]; then
 
         # Проверка 6: L1 SKILL.md files must carry USER-SPACE marker block
         # Проверка 7: L1 SKILL.md must not carry an unresolved L3-author value (WP-5 L1/L3-разделение)
+        # Checks BOTH marker forms — unresolved (skill-promote.sh never ran) AND resolved
+        # (skill-promote.sh ran but the substitution silently failed, e.g. a sed-special
+        # character in `value` broke the replacement) — a resolved marker whose placeholder
+        # is NOT actually present in the file means the value leaked through unreplaced.
         while IFS= read -r -d '' md_file; do
             fname="${md_file#$FMT_ROOT/}"
             if grep -qE '^layer:[[:space:]]*L1' "$md_file" 2>/dev/null; then
@@ -176,14 +180,29 @@ if [[ "$MODE" != "scripts" && "$MODE" != "settings-json" ]]; then
                     errors=$((errors + 1))
                 fi
 
-                l3_leftover=$(grep -oE '<!-- L3-author: [A-Za-z_][A-Za-z0-9_]*=[^,]+, в шаблоне → \{\{[A-Za-z0-9_]+\}\}' "$md_file" 2>/dev/null \
-                    | sed -E 's/^<!-- L3-author: ([A-Za-z_][A-Za-z0-9_]*)=([^,]+), в шаблоне → (\{\{[A-Za-z0-9_]+\}\})$/\1=\2/' \
-                    | while IFS='=' read -r key val; do
-                        grep -qF "$val" "$md_file" 2>/dev/null && echo "$key=$val"
-                    done)
+                l3_leftover=""
+                while IFS= read -r marker; do
+                    [ -n "$marker" ] || continue
+                    key=$(printf '%s' "$marker" | sed -E 's/^<!-- L3-author: ([A-Za-z_][A-Za-z0-9_]*)=.*/\1/')
+                    val=$(printf '%s' "$marker" | sed -E 's/^<!-- L3-author: [A-Za-z_][A-Za-z0-9_]*=(.*), в шаблоне → \{\{[A-Za-z0-9_]+\}\}$/\1/')
+                    [ -n "$key" ] && [ -n "$val" ] || continue
+                    grep -qF "\"$val\"" "$md_file" 2>/dev/null && l3_leftover="${l3_leftover}${key}=${val}
+"
+                done < <(grep -oE '<!-- L3-author: [A-Za-z_][A-Za-z0-9_]*=[^,]+, в шаблоне → \{\{[A-Za-z0-9_]+\}\}' "$md_file" 2>/dev/null)
+
+                while IFS= read -r marker; do
+                    [ -n "$marker" ] || continue
+                    key=$(printf '%s' "$marker" | sed -E 's/^<!-- L3-author: ([A-Za-z_][A-Za-z0-9_]*) was here.*/\1/')
+                    placeholder=$(printf '%s' "$marker" | grep -oE '\{\{[A-Za-z0-9_]+\}\}')
+                    [ -n "$key" ] && [ -n "$placeholder" ] || continue
+                    grep -qF "\"$placeholder\"" "$md_file" 2>/dev/null \
+                        || l3_leftover="${l3_leftover}${key}: маркер резолвлен, но \"${placeholder}\" не найден в файле — подстановка не сработала
+"
+                done < <(grep -oE '<!-- L3-author: [A-Za-z_][A-Za-z0-9_]* was here, replaced with \{\{[A-Za-z0-9_]+\}\}' "$md_file" 2>/dev/null)
+
                 if [[ -n "$l3_leftover" ]]; then
                     echo "  ❌ $fname: L3-author значение не заменено на {{PLACEHOLDER}} при промоции" >&2
-                    echo "$l3_leftover" | sed 's/^/     /' >&2
+                    echo "$l3_leftover" | sed '/^$/d; s/^/     /' >&2
                     errors=$((errors + 1))
                 fi
             fi
