@@ -105,9 +105,27 @@ Versioning: [Semantic Versioning](https://semver.org/).
 
 
 
-## [Unreleased]
 
-Спасибо трём репортёрам, которых пропустили в предыдущих раундах благодарностей, хотя их баги давно исправлены: **SDaiBots** — #217 (`/iwe-restore` не подставлял пути, бэкап не переносился между ОС), #221 (шаблоны DayPlan/WeekPlan конфликтовали с собственным валидатором артефактов), #224 (`wp-new` обещал секцию закрытия в архиве, но не создавал её), #228 (файлы стиля общения по умолчанию сразу превышали лимит горячей памяти); **AONarchuk** — #215 (`update.sh` падал на определении осиротевших файлов и конфликтовал с собственными pre-commit проверками); **trover97** — #218 (переименование пути в манифесте не помечало старый путь как устаревший — он навсегда зависал сиротой).
+
+## [Unreleased] — обновлено 2026-07-19
+
+### Added
+
+- `5aabac2` feat(wp483): sync guide-kit v0.1.1 into template
+
+### Changed
+
+- `c40b041` docs(changelog): thank SDaiBots (#217/#221/#224/#228), AONarchuk (#215), trover97 (#218) — пропущены в прошлых раундах благодарностей
+- `b08403d` chore: release 0.36.0
+- `fb9afa6` docs(changelog): regenerate [Unreleased] after guide-kit v0.1.1 sync
+
+### Fixed
+
+- `3f91860` fix(release): sync README version badge to 0.36.0
+- `b0f675b` fix(scripts): env-fallback для GOVERNANCE_REPO в generate-hot-files-list.sh
+- `1b29b19` fix(strategist): убрать хардкод DS-strategy в DAY_OPEN_PIPELINE (регрессия 238a5c1)
+- `5cd5695` fix(roles): runtime-резолв путей в extractor/synchronizer вместо build-time плейсхолдеров
+
 
 ## [0.36.0] — 2026-07-19
 

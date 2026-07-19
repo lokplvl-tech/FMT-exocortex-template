@@ -172,6 +172,21 @@ if [ -n "$IC_BLOCK" ]; then
     done <<< "$IC_BLOCK"
 fi
 
+# -- Replace L3-author marker values with {{PLACEHOLDER}} (WP-5 L1/L3-разделение в скиллах)
+# Marker syntax: <!-- L3-author: KEY=value, в шаблоне → {{PLACEHOLDER}} -->
+# Only quoted occurrences ("value") are substituted — a bare value elsewhere in the file
+# (e.g. an illustrative example) is left untouched. Collect val→placeholder pairs, THEN
+# blank the marker's own `value` (so the marker text itself isn't caught by the loop below).
+L3_PAIRS=$(grep -oE '<!-- L3-author: [A-Za-z_][A-Za-z0-9_]*=[^,]+, в шаблоне → \{\{[A-Za-z0-9_]+\}\}' "$DEST/SKILL.md" 2>/dev/null \
+    | sed -E 's/^<!-- L3-author: ([A-Za-z_][A-Za-z0-9_]*)=([^,]+), в шаблоне → (\{\{[A-Za-z0-9_]+\}\})$/\1|\2|\3/')
+if [ -n "$L3_PAIRS" ]; then
+    sed_inplace -E "s|<!-- L3-author: ([A-Za-z_][A-Za-z0-9_]*)=[^,]+, в шаблоне → (\{\{[A-Za-z0-9_]+\}\}) -->|<!-- L3-author: \1 was here, replaced with \2 -->|" "$DEST/SKILL.md"
+    while IFS='|' read -r key val placeholder; do
+        [ -n "$val" ] && [ -n "$placeholder" ] || continue
+        sed_inplace "s|\"${val}\"|\"${placeholder}\"|g" "$DEST/SKILL.md"
+    done <<< "$L3_PAIRS"
+fi
+
 # Подстановки в .sh скрипты скилла (рекурсивно)
 while IFS= read -r -d '' f; do
     substitute_file "$f"

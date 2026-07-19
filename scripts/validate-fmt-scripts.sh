@@ -19,6 +19,8 @@
 #   4. *.sh под set -e: ((VAR++)) без || true → silent exit при VAR==0 (B8 gap)
 #   5. .claude/skills/*/SKILL.md: $HOME/IWE/<author-repo>/ и ~/IWE/<author-repo>/
 #      без env-fallback ${IWE_GOVERNANCE_REPO:-...} (WP-337 З-Ф6, 1 июня 2026)
+#   6. .claude/skills/*/SKILL.md: L1 layer без маркера <!-- USER-SPACE -->
+#   7. .claude/skills/*/SKILL.md: L1 layer с незамещённым <!-- L3-author: KEY=value --> (WP-5)
 
 set -uo pipefail
 
@@ -164,12 +166,24 @@ if [[ "$MODE" != "scripts" && "$MODE" != "settings-json" ]]; then
         fi
 
         # Проверка 6: L1 SKILL.md files must carry USER-SPACE marker block
+        # Проверка 7: L1 SKILL.md must not carry an unresolved L3-author value (WP-5 L1/L3-разделение)
         while IFS= read -r -d '' md_file; do
             fname="${md_file#$FMT_ROOT/}"
             if grep -qE '^layer:[[:space:]]*L1' "$md_file" 2>/dev/null; then
                 if ! grep -q '^<!-- USER-SPACE -->' "$md_file" 2>/dev/null; then
                     echo "  ❌ $fname: L1 SKILL.md без маркера <!-- USER-SPACE -->" >&2
                     echo "     → Запусти: bash \$IWE_SCRIPTS/add-skill-markers.sh" >&2
+                    errors=$((errors + 1))
+                fi
+
+                l3_leftover=$(grep -oE '<!-- L3-author: [A-Za-z_][A-Za-z0-9_]*=[^,]+, в шаблоне → \{\{[A-Za-z0-9_]+\}\}' "$md_file" 2>/dev/null \
+                    | sed -E 's/^<!-- L3-author: ([A-Za-z_][A-Za-z0-9_]*)=([^,]+), в шаблоне → (\{\{[A-Za-z0-9_]+\}\})$/\1=\2/' \
+                    | while IFS='=' read -r key val; do
+                        grep -qF "$val" "$md_file" 2>/dev/null && echo "$key=$val"
+                    done)
+                if [[ -n "$l3_leftover" ]]; then
+                    echo "  ❌ $fname: L3-author значение не заменено на {{PLACEHOLDER}} при промоции" >&2
+                    echo "$l3_leftover" | sed 's/^/     /' >&2
                     errors=$((errors + 1))
                 fi
             fi
