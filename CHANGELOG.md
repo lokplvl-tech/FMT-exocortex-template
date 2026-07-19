@@ -105,7 +105,9 @@ Versioning: [Semantic Versioning](https://semver.org/).
 
 
 
-## [Unreleased] — обновлено 2026-07-18
+## [Unreleased]
+
+## [0.36.0] — 2026-07-19
 
 ### Added
 
@@ -185,6 +187,9 @@ Versioning: [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- `b0f675b` fix(scripts): env-fallback для GOVERNANCE_REPO в generate-hot-files-list.sh (CI-блокер, найден при релизе)
+- `1b29b19` fix(strategist): убрать хардкод DS-strategy в DAY_OPEN_PIPELINE (регрессия 238a5c1, блокировала CI)
+- `5cd5695` fix(roles): runtime-резолв путей в extractor/synchronizer вместо build-time плейсхолдеров (issue #271)
 - `5dcff24` fix(wp485): доставить 4 скрипта, обещанных уже промотированными SKILL.md (Ф4)
 - `0b20534` fix(templ): issue funnel 266 — доставка session-guard.sh + SessionEnd fail-safe
 - `eb612ec` fix(day-open/day-close): дедупликация repo-symlink алиасов в циклах по репозиториям
