@@ -441,6 +441,27 @@ if [ "$TOTAL_CHANGES" -eq 0 ]; then
         echo "  ℹ Режим --check: repair-pass пропущен (может чинить workspace, запусти без --check)."
     else
         repair_pass
+        # issue #279: TOTAL_CHANGES=0 сравнивает только содержимое файлов, не
+        # версию в update-manifest.json — без этого локальный манифест навсегда
+        # остаётся на старой версии, и --check --fast (сравнивающий только версию)
+        # ложно сообщает об обновлении на каждом следующем прогоне.
+        if [ -f "$MANIFEST" ]; then
+            LOCAL_HASH_BEFORE=$(hash_file "$SCRIPT_DIR/update-manifest.json" 2>/dev/null || true)
+            REMOTE_HASH=$(hash_file "$MANIFEST" 2>/dev/null || true)
+            if [ "$LOCAL_HASH_BEFORE" != "$REMOTE_HASH" ]; then
+                cp "$MANIFEST" "$SCRIPT_DIR/update-manifest.json" \
+                    && echo "  • update-manifest.json: версия синхронизирована (v$UPSTREAM_VERSION)"
+                if is_author_mode; then
+                    git add "$SCRIPT_DIR/update-manifest.json" 2>/dev/null || true
+                else
+                    git add -C "$SCRIPT_DIR" update-manifest.json 2>/dev/null || true
+                fi
+                # pathspec после `--`: коммитить ТОЛЬКО манифест — bare `git commit`
+                # коммитит весь текущий индекс, включая чужое pre-staged (Kimi/Hermes
+                # работают параллельно) под обманчивым "chore: sync..." сообщением.
+                git commit -m "chore: sync update-manifest.json version to v$UPSTREAM_VERSION" --no-verify -- "$SCRIPT_DIR/update-manifest.json" 2>&1 | sed 's/^/  /'
+            fi
+        fi
     fi
     echo "✓ Всё актуально. Обновлений нет. ($UNCHANGED файлов проверено)"
     exit 0
