@@ -1304,9 +1304,13 @@ fi
 # so verify-context-budget.sh resolves the governance CLAUDE.md on THIS install
 # (script reads GOVERNANCE_REPO from $WORKSPACE_DIR/.exocortex.env itself).
 if [ -f "$SCRIPT_DIR/scripts/generate-hot-files-list.sh" ]; then
-    HOTFILES_OUTPUT=$(IWE_ROOT="$WORKSPACE_DIR" bash "$SCRIPT_DIR/scripts/generate-hot-files-list.sh" 2>&1) && \
-        echo "$HOTFILES_OUTPUT" | sed 's/^/  /' || \
-        { echo "$HOTFILES_OUTPUT" | sed 's/^/  /'; echo "  ⚠ hot-files.list не пересобран — запусти вручную: bash $SCRIPT_DIR/scripts/generate-hot-files-list.sh"; }
+    if $CHECK_ONLY; then
+        echo "  [CHECK] Would regenerate hot-files.list (bash $SCRIPT_DIR/scripts/generate-hot-files-list.sh)"
+    else
+        HOTFILES_OUTPUT=$(IWE_ROOT="$WORKSPACE_DIR" bash "$SCRIPT_DIR/scripts/generate-hot-files-list.sh" 2>&1) && \
+            echo "$HOTFILES_OUTPUT" | sed 's/^/  /' || \
+            { echo "$HOTFILES_OUTPUT" | sed 's/^/  /'; echo "  ⚠ hot-files.list не пересобран — запусти вручную: bash $SCRIPT_DIR/scripts/generate-hot-files-list.sh"; }
+    fi
 fi
 
 # === Step 6e: Replace local manifest with downloaded remote manifest ===
