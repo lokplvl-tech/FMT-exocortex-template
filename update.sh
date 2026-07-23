@@ -263,15 +263,49 @@ UPSTREAM_VERSION=$(grep '"version"' "$MANIFEST" | head -1 | sed 's/.*"version"[[
 echo "  Версия upstream: $UPSTREAM_VERSION"
 echo ""
 
-# === Fast check (issue #230): version-only comparison, skips the ~330-file download loop ===
+# === Fast check (issue #230): manifest-content comparison, skips the ~330-file download loop ===
 # Достаточно для светофора Day Open (шаг 5) — полный список изменений всё ещё
 # доступен через `--check` без `--fast`.
+#
+# issue #288: version-only сравнение молчало, когда files[] менялся (файлы
+# добавлены/удалены/переименованы) без бампа версии — «✓ обновлений нет»,
+# хотя доступны новые файлы. Манифест уже скачан выше (Step 1), поэтому
+# сравнение хэша files[] той же стоимости, что версии, но ловит состав, не
+# только номер. python3 недоступен → откат на version-only с явной пометкой
+# (не тихий даунгрейд гарантии).
 if $CHECK_ONLY && $FAST_CHECK; then
     LOCAL_MANIFEST="$SCRIPT_DIR/update-manifest.json"
     LOCAL_VERSION=""
     [ -f "$LOCAL_MANIFEST" ] && LOCAL_VERSION=$(grep '"version"' "$LOCAL_MANIFEST" | head -1 | sed 's/.*"version"[[:space:]]*:[[:space:]]*"//;s/".*//')
-    if [ -n "$LOCAL_VERSION" ] && [ "$LOCAL_VERSION" = "$UPSTREAM_VERSION" ]; then
-        echo "✓ Версия совпадает с upstream (v$UPSTREAM_VERSION). Обновлений нет."
+
+    if command -v python3 >/dev/null 2>&1 && [ -f "$LOCAL_MANIFEST" ]; then
+        FILES_MATCH=$(python3 -c "
+import json, sys
+def files_key(path):
+    try:
+        with open(path) as f:
+            data = json.load(f)
+    except Exception:
+        return None
+    return sorted(json.dumps(f, sort_keys=True) for f in data.get('files', []))
+local_files = files_key('$LOCAL_MANIFEST')
+upstream_files = files_key('$MANIFEST')
+if local_files is None or upstream_files is None:
+    print('unknown')
+else:
+    print('match' if local_files == upstream_files else 'differ')
+" 2>/dev/null)
+        if [ "$FILES_MATCH" = "match" ] && [ -n "$LOCAL_VERSION" ] && [ "$LOCAL_VERSION" = "$UPSTREAM_VERSION" ]; then
+            echo "✓ Версия и состав манифеста совпадают с upstream (v$UPSTREAM_VERSION). Обновлений нет."
+        elif [ "$FILES_MATCH" = "differ" ]; then
+            echo "⚠ Состав манифеста изменился (файлы добавлены/удалены/обновлены), версия та же (v$UPSTREAM_VERSION)."
+            echo "  Для полного списка изменений: bash update.sh --check (без --fast)."
+        else
+            echo "⚠ Версия отличается: локально v${LOCAL_VERSION:-неизвестно}, upstream v$UPSTREAM_VERSION."
+            echo "  Для полного списка изменений: bash update.sh --check (без --fast)."
+        fi
+    elif [ -n "$LOCAL_VERSION" ] && [ "$LOCAL_VERSION" = "$UPSTREAM_VERSION" ]; then
+        echo "✓ Версия совпадает с upstream (v$UPSTREAM_VERSION). python3 не найден — состав манифеста не сверен."
     else
         echo "⚠ Версия отличается: локально v${LOCAL_VERSION:-неизвестно}, upstream v$UPSTREAM_VERSION."
         echo "  Для полного списка изменений: bash update.sh --check (без --fast)."
