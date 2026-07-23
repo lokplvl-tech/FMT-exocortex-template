@@ -21,7 +21,7 @@ EXIT_GENERAL=1
 
 trap 'echo "ОШИБКА: update.sh прервался на строке ${LINENO}: ${BASH_COMMAND}" >&2' ERR
 
-VERSION="2.4.0"  # fix #229: repair-pass no longer stale-repairs memory files with owner: user in frontmatter; fix #228: hot-budget validator warns when memory/*.md horizon:hot lines exceed threshold
+VERSION="2.4.1"  # fix (WP-401): deprecated-file removal now checks is_protected_user_file() — a protected file (e.g. sessions/00-index.md) listed in deprecated_files by mistake could previously be deleted despite the "Не затрагиваются" report claiming otherwise; fix #229: repair-pass no longer stale-repairs memory files with owner: user in frontmatter; fix #228: hot-budget validator warns when memory/*.md horizon:hot lines exceed threshold
 REPO="TserenTserenov/FMT-exocortex-template" # UPSTREAM-CONST: do not substitute
 BRANCH="main"
 RAW_BASE="https://raw.githubusercontent.com/$REPO/$BRANCH"
@@ -130,6 +130,19 @@ substitute_claude_placeholders() {
         -e "s|{{IWE_TEMPLATE}}|$(sed_escape_replacement "${SUBST_IWE_TEMPLATE:-$SCRIPT_DIR}")|g" \
         -e "s|{{IWE_RUNTIME}}|$(sed_escape_replacement "${SUBST_IWE_RUNTIME:-}")|g" \
         "$dst"
+}
+
+# Protected user files (issue #154): once seeded, these hold user-authored content
+# (permissions, memory, peer-session journal) — update.sh must never touch them again,
+# neither overwrite (download loop) nor delete (deprecated-file cleanup). Single source
+# of truth for both checks — a file listed here but not the other used to silently lose
+# its delete-protection (bug found 2026-07-23, sessions/00-index.md deleted despite being
+# in the "Не затрагиваются" report section — see WP-401 Ф6.1 write-up).
+is_protected_user_file() {
+    case "$1" in
+        params.yaml|memory/MEMORY.md|.claude/settings.local.json|sessions/00-index.md) return 0 ;;
+        *) return 1 ;;
+    esac
 }
 
 # Личные L4-конфиги в memory/: update.sh сеет их при ОТСУТСТВИИ (новая инсталляция),
@@ -395,14 +408,12 @@ DOWNLOAD_IDX=0
 while IFS='|' read -r fpath fdesc; do
     [ -z "$fpath" ] && continue
     # Protected user files (issue #154): never overwrite if they already exist locally.
-    # The "Не затрагиваются" list below is cosmetic; this is the actual skip-if-exists guard.
-    case "$fpath" in
-        params.yaml|memory/MEMORY.md|.claude/settings.local.json|sessions/00-index.md)
-            if [ -f "$SCRIPT_DIR/$fpath" ]; then
-                UNCHANGED=$((UNCHANGED + 1))
-                continue
-            fi ;;
-    esac
+    # The "Не затрагиваются" list below is cosmetic; is_protected_user_file() is the
+    # actual skip-if-exists guard (shared with the deprecated-file removal loop below).
+    if is_protected_user_file "$fpath" && [ -f "$SCRIPT_DIR/$fpath" ]; then
+        UNCHANGED=$((UNCHANGED + 1))
+        continue
+    fi
     DOWNLOAD_IDX=$((DOWNLOAD_IDX + 1))
     printf "  (%s/%s) %s\r" "$DOWNLOAD_IDX" "$TOTAL_FILES" "$fpath"
 
@@ -466,6 +477,10 @@ DEPRECATED_REASONS=()
 
 while IFS='|' read -r fpath freason; do
     [ -z "$fpath" ] && continue
+    # Same guard as the download loop above: a protected user file must never be
+    # deleted either, even if a future manifest lists it as deprecated by mistake
+    # (bug found 2026-07-23 — sessions/00-index.md was listed, protection didn't apply).
+    is_protected_user_file "$fpath" && continue
     if [ -f "$SCRIPT_DIR/$fpath" ]; then
         DEPRECATED_FOUND+=("$fpath")
         DEPRECATED_REASONS+=("${freason:-устарел}")

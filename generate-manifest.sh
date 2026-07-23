@@ -46,7 +46,11 @@ SKIP_PATTERNS=(
 EXCLUDED_PATTERNS=(
     "scripts/tests/"
     "docs/"        # WP-401 Ф6.1: documentation pipeline deprecated, consolidated in memory/ (was: only docs/developer/)
-    "sessions/"    # WP-401 Ф6.1: session transcripts archived, not for delivery
+    "sessions/2026-06/"    # WP-401 Ф6.1: archived transcript, not for delivery. NOTE: sessions/00-index.md
+                            # stays OUT of this exclusion on purpose — it's a protected seed-once-then-never-
+                            # touch file like memory/MEMORY.md (see is_protected_user_file() in update.sh),
+                            # not a deprecated artifact. A future "sessions/YYYY-MM/" transcript must get its
+                            # own dated exclusion here, not a blanket "sessions/".
 )
 
 EXCLUDED_SCRIPTS=(
