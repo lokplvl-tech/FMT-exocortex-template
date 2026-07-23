@@ -178,6 +178,50 @@ class TestDayClosePrepareWhitelist:
         assert r.returncode == 2
 
 
+class TestDayClosePrepareQuotedInvocation:
+    """2026-07-23: реальный вызов из day-close/SKILL.md шаг 0б —
+    `bash "$IWE_SCRIPTS/day-close-prepare.sh"`, путь В КАВЫЧКАХ. До v3 quote-strip
+    стирал кавычный спан в фиксированный "QSTR" ДО whitelist-проверки, поэтому
+    именно эта, реальная форма вызова гарантированно блокировалась — plain-путь
+    без кавычек (см. TestDayClosePrepareWhitelist выше) проходил и маскировал баг.
+    v3 хранит исходный текст спана в QVALS[] и разворачивает его точечно внутри
+    check_indirect(), сегментация видит только безопасный плейсхолдер."""
+
+    def test_quoted_literal_iwe_scripts_var_allowed(self, sentinel):
+        """Буквально то, что написано в SKILL.md: переменная НЕ развёрнута самим
+        хуком (он не исполняет команду, только парсит текст) — сравнение идёт
+        по литеральному тексту '$IWE_SCRIPTS/day-close-prepare.sh'."""
+        r = _run_hook('bash "$IWE_SCRIPTS/day-close-prepare.sh"')
+        assert r.returncode == 0, r.stderr
+
+    def test_quoted_absolute_path_allowed(self, sentinel):
+        r = _run_hook(f'bash "{Path.home()}/IWE/FMT-exocortex-template/scripts/day-close-prepare.sh"')
+        assert r.returncode == 0, r.stderr
+
+    def test_quoted_relative_path_allowed(self, sentinel):
+        r = _run_hook('bash "FMT-exocortex-template/scripts/day-close-prepare.sh"')
+        assert r.returncode == 0, r.stderr
+
+    def test_quoted_absolute_path_with_verify_allowed(self, sentinel):
+        r = _run_hook(f'bash "{Path.home()}/IWE/FMT-exocortex-template/scripts/day-close-prepare.sh" --verify')
+        assert r.returncode == 0, r.stderr
+
+    def test_quoted_decoy_tmp_path_blocked(self, sentinel):
+        """Кавычки сами по себе не открывают обход — подложный путь всё ещё вне whitelist."""
+        r = _run_hook('bash "/tmp/FMT-exocortex-template/scripts/day-close-prepare.sh"')
+        assert r.returncode == 2
+
+    def test_quoted_other_script_still_blocked(self, sentinel):
+        """Whitelist матчит точный литерал, не префикс/директорию — соседний скрипт в кавычках тоже блок."""
+        r = _run_hook(f'bash "{Path.home()}/IWE/FMT-exocortex-template/scripts/day-open-preflight.sh"')
+        assert r.returncode == 2
+
+    def test_quoted_iwe_scripts_var_other_script_blocked(self, sentinel):
+        """Whitelist по литералу '$IWE_SCRIPTS/day-close-prepare.sh' — не по всей директории $IWE_SCRIPTS."""
+        r = _run_hook('bash "$IWE_SCRIPTS/day-open-preflight.sh"')
+        assert r.returncode == 2
+
+
 class TestSentinelInactive:
     def test_no_sentinel_allows_everything(self):
         if SENTINEL.exists():
