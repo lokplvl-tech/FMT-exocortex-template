@@ -1619,6 +1619,7 @@
     "scripts/tests/test_day_close_prepare.py",
     "scripts/tests/test_delivery_content.py",
     "scripts/tests/test_delivery_formal.py",
+    "scripts/tests/test_destructive_guard.py",
     "scripts/tests/test_dry_run_gate.py",
     "scripts/tests/test_manifest_coverage_local.py",
     "scripts/tests/test_skill_promote.py",

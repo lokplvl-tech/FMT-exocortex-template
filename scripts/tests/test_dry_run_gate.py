@@ -110,6 +110,74 @@ class TestSentinelActive:
         assert r.returncode == 0, r.stderr
 
 
+class TestAbsolutePathBypass:
+    """2026-07-23: полный/относительный путь к команде должен классифицироваться
+    так же, как bare имя команды (basename-нормализация первого слова фрагмента
+    и слова-обёртки sudo/env/... — найдено при аудите барьеров)."""
+
+    def test_absolute_path_git_commit_blocked(self, sentinel):
+        assert _run_hook("/usr/bin/git commit -m x").returncode == 2
+
+    def test_absolute_path_git_push_blocked(self, sentinel):
+        assert _run_hook("/usr/bin/git push origin main").returncode == 2
+
+    def test_relative_dot_git_commit_blocked(self, sentinel):
+        assert _run_hook("./git commit -m x").returncode == 2
+
+    def test_absolute_path_readonly_git_allowed(self, sentinel):
+        for cmd in ("/usr/bin/git status --short", "/usr/bin/git log --oneline -3"):
+            r = _run_hook(cmd)
+            assert r.returncode == 0, cmd
+
+    def test_absolute_path_rm_blocked(self, sentinel):
+        assert _run_hook("/bin/rm /tmp/iwe-drg-test-f").returncode == 2
+
+    def test_absolute_path_bash_script_blocked(self, sentinel):
+        """Whitelist по-прежнему сверяется с полным путём — произвольный скрипт под /bin/bash тоже блокируется."""
+        assert _run_hook("/bin/bash scripts/deploy.sh --prod").returncode == 2
+
+    def test_absolute_sudo_wrapper_git_blocked(self, sentinel):
+        """Обёртка sudo/env через полный путь тоже резолвится по basename."""
+        assert _run_hook("/usr/bin/sudo git commit -m x").returncode == 2
+
+    def test_absolute_env_wrapper_git_blocked(self, sentinel):
+        assert _run_hook("/usr/bin/env git push origin main").returncode == 2
+
+    def test_lookalike_word_not_falsely_blocked(self, sentinel):
+        """Слово, оканчивающееся на 'git' без разделителя '/' — не git-команда."""
+        r = _run_hook("mygit commit -m x")
+        assert r.returncode == 0, r.stderr
+
+
+class TestDayClosePrepareWhitelist:
+    """2026-07-23 (issue #264 расширение): day-close-prepare.sh полностью
+    read-only (digest + --verify — только echo/grep/git log/git status
+    --porcelain/ls/python3 check-index-health.py), но не был в whitelist и
+    блокировался под dry-run как произвольный скрипт."""
+
+    def test_relative_path_allowed(self, sentinel):
+        r = _run_hook("bash FMT-exocortex-template/scripts/day-close-prepare.sh")
+        assert r.returncode == 0, r.stderr
+
+    def test_absolute_path_allowed(self, sentinel):
+        r = _run_hook(f"bash {Path.home()}/IWE/FMT-exocortex-template/scripts/day-close-prepare.sh")
+        assert r.returncode == 0, r.stderr
+
+    def test_absolute_path_with_verify_arg_allowed(self, sentinel):
+        r = _run_hook(f"bash {Path.home()}/IWE/FMT-exocortex-template/scripts/day-close-prepare.sh --verify")
+        assert r.returncode == 0, r.stderr
+
+    def test_decoy_tmp_path_blocked(self, sentinel):
+        """Подложный путь (не привязанный к $HOME/IWE) — block, как и для load-extensions.sh."""
+        r = _run_hook("bash /tmp/FMT-exocortex-template/scripts/day-close-prepare.sh")
+        assert r.returncode == 2
+
+    def test_other_script_still_blocked(self, sentinel):
+        """Whitelist узкий — соседний скрипт в той же папке по-прежнему блокируется."""
+        r = _run_hook(f"bash {Path.home()}/IWE/FMT-exocortex-template/scripts/day-open-preflight.sh")
+        assert r.returncode == 2
+
+
 class TestSentinelInactive:
     def test_no_sentinel_allows_everything(self):
         if SENTINEL.exists():
