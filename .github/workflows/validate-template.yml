@@ -249,6 +249,13 @@ jobs:
       - name: Run validate-fmt-scripts (author-specific hardcodes & conventions)
         run: bash scripts/validate-fmt-scripts.sh
 
+      # issue #291: путь в бэктиках платформенной части CLAUDE.md (start..SYNC-CORE-END,
+      # доставляется на 100% установок через update.sh §1-7 + Agent Core) обязан
+      # существовать в репо или в update-manifest.json — иначе это мёртвая ссылка на
+      # каждой пользовательской установке, не только у автора.
+      - name: Check CLAUDE.md platform-section links resolve (issue #291)
+        run: python3 scripts/check-claude-md-links.py --strict
+
       # CI-only check: MCP — серверы подключаются через claude.ai/settings/connectors
       - name: Check MCP documentation
         run: |
