@@ -59,7 +59,10 @@ iwe_scheduler_active() {
   if command -v launchctl >/dev/null 2>&1; then
     launchctl list 2>/dev/null | grep -qE "com\.(exocortex\.scheduler|strategist\.morning|strategist\.weekreview|extractor\.inbox-check)"
   elif command -v systemctl >/dev/null 2>&1; then
-    systemctl --user list-timers --all --no-legend 2>/dev/null \
+    # No --all: list-timers without it already restricts to loaded+active
+    # units. --all would also match a disabled/stopped timer, reporting a
+    # dead scheduler as 🟢.
+    systemctl --user list-timers --no-legend 2>/dev/null \
       | grep -qE "iwe-(exocortex-scheduler|strategist-morning|strategist-weekreview|extractor-inbox-check)\.timer"
   else
     return 1
@@ -92,14 +95,15 @@ tg_notify() {
 # zero callers in the same audit, факт #5) rather than deleted: this exact
 # failure mode is a live, open risk this pilot's own sessions hit twice on
 # 2026-07-23 (see feedback_parallel_agents_shared_workdir_git_race.md), and
-# several callers were still doing a naive `git pull --rebase`. Non-interactive
-# callers (cron/launchd — no tty) abort on genuine divergence rather than
-# hang on the confirmation prompt real diverge handling would otherwise need.
+# several callers were still doing a naive `git pull --rebase`.
 #
 # Scope: fast-forward and "only local ahead" cases are handled fully. A true
-# two-sided divergence returns 2 with the situation printed — the caller
-# decides whether to escalate (this is deliberately not fully automatic:
-# an unattended rebase across real divergence is its own risk).
+# two-sided divergence with NO same-patch collision rebases automatically
+# (no tty/confirmation gate — day-open-pipeline.sh runs unattended from two
+# machines by design, and gating on tty would turn every ordinary divergence
+# into a hard pipeline failure; the git-cherry pre-check above IS the safety
+# gate, not a human glancing at the output). A collision (the actual unsafe
+# case) always returns 2 without touching the branch, tty or not.
 iwe_safe_pull() {
   local repo="."
   while [ $# -gt 0 ]; do
@@ -170,11 +174,6 @@ iwe_safe_pull() {
       exit 2
     fi
 
-    if [ ! -t 0 ] || [ ! -t 1 ]; then
-      echo "iwe_safe_pull: diverged ($ahead local / $behind upstream) and not interactive — refusing to auto-rebase" >&2
-      exit 2
-    fi
-
     orig_pids=()
     while IFS= read -r sha; do
       [ -n "$sha" ] || continue
@@ -197,16 +196,16 @@ iwe_safe_pull() {
       new_pids+=("$(git diff-tree -p "$sha" | git patch-id --stable | awk '{print $1}')")
     done < <(git rev-list --reverse "$upstream"..HEAD)
 
-    missing=0
-    for opid in "${orig_pids[@]}"; do
-      found=0
-      for npid in "${new_pids[@]}"; do
-        [ "$opid" = "$npid" ] && { found=1; break; }
-      done
-      [ "$found" -eq 0 ] && { echo "iwe_safe_pull: ERROR — local patch $opid was lost during rebase" >&2; missing=1; }
-    done
-
-    if [ "$missing" -ne 0 ]; then
+    # Multiset diff, not membership: two distinct local commits can share a
+    # patch-id (identical diff, different message) — a naive "does opid
+    # exist anywhere in new_pids" membership check would mark both as
+    # present after only one survived. `comm -23` on two sorted streams
+    # treats each line occurrence separately, so a genuinely dropped
+    # duplicate still shows up as one missing line.
+    missing=$(comm -23 <(printf '%s\n' "${orig_pids[@]}" | sort) <(printf '%s\n' "${new_pids[@]}" | sort))
+    if [ -n "$missing" ]; then
+      echo "iwe_safe_pull: ERROR — local patch(es) lost during rebase:" >&2
+      echo "$missing" | sed 's/^/  /' >&2
       echo "iwe_safe_pull: rebase dropped local commit(s). Recover: git rebase --abort, or inspect: git reflog $branch" >&2
       exit 4
     fi

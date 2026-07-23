@@ -69,7 +69,10 @@ fi
 # === Фильтрация --add-dir через .agentigore + PII sanity-check (шаблонные скрипты, read-only reuse) ===
 
 FILTERED_DIRS=()
-TMP_ROOT=$(mktemp -d -t codex-peer-XXXXXX)
+# `-t template` is BSD/GNU compatible in practice but its exact semantics
+# differ (docs/PLATFORM-COMPAT.md) — a fully-qualified template path avoids
+# `-t` entirely and is identical on both.
+TMP_ROOT=$(mktemp -d "${TMPDIR:-/tmp}/codex-peer-XXXXXX")
 
 MERGED_AGENTIGORE="$TMP_ROOT/.agentigore"
 : > "$MERGED_AGENTIGORE"

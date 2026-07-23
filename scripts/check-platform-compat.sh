@@ -19,6 +19,14 @@
 
 set -uo pipefail
 
+# Resolved BEFORE the `cd "$ROOT"` below: if invoked as a relative path
+# (e.g. `cd scripts && bash check-platform-compat.sh`, matching the usage
+# comment above), `dirname "${BASH_SOURCE[0]}"` is "." — resolving it AFTER
+# cd'ing to repo root would silently resolve to the wrong directory and
+# break the self-exclusion below (found by review: self-matched with 3
+# false positives when invoked this way).
+SELF="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
+
 ROOT="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 cd "$ROOT" || exit 2
 
@@ -27,7 +35,6 @@ cd "$ROOT" || exit 2
 # exclusion for the same reason). This script's own file is excluded too — its
 # doc-comments and pattern-string literals name every construct it checks for,
 # which would otherwise flag itself.
-SELF="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
 FILES_SH=$(find . -path ./guide-kit -prune -o -path ./.git -prune -o -name "*.sh" -type f -print 2>/dev/null \
   | while read -r f; do [ "$(cd "$(dirname "$f")" && pwd)/$(basename "$f")" = "$SELF" ] || echo "$f"; done)
 FILES_PY=$(find . -path ./guide-kit -prune -o -path ./.git -prune -o -name "*.py" -type f -print 2>/dev/null)
