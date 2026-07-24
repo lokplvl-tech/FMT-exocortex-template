@@ -1,5 +1,7 @@
 # IWE — Intellectual Work Environment
 
+<!-- test/pr-template-verification: тестовый прогон гибридного шаблона Pull Request (.github/PULL_REQUEST_TEMPLATE.md), 2026-07-24. Изменение неразрушающее, удаляется после проверки. -->
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.36.0-blue.svg)](CHANGELOG.md)
 [![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows%20(Git%20Bash)-lightgrey.svg)]()
