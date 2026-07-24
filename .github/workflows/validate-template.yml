@@ -228,6 +228,17 @@ jobs:
           done < <(find . -path ./guide-kit -prune -o -name "*.sh" -type f -print0)
           exit $FAIL
 
+  # WP-5 Ubuntu-audit факт #4/#6: docs/PLATFORM-COMPAT.md listed the safe
+  # patterns for macOS-only constructs (osascript, launchctl, date -v, etc.)
+  # but nothing enforced them — every concrete bug this audit found was a
+  # case the checklist already named. Turns the checklist into a gate.
+  platform-compat:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Check docs/PLATFORM-COMPAT.md constructs are guarded
+        run: bash scripts/check-platform-compat.sh
+
   validate:
     runs-on: ubuntu-latest
     steps:
@@ -248,6 +259,13 @@ jobs:
       # только при staged .claude/settings.json) и ручной запуск.
       - name: Run validate-fmt-scripts (author-specific hardcodes & conventions)
         run: bash scripts/validate-fmt-scripts.sh
+
+      # issue #291: путь в бэктиках платформенной части CLAUDE.md (start..SYNC-CORE-END,
+      # доставляется на 100% установок через update.sh §1-7 + Agent Core) обязан
+      # существовать в репо или в update-manifest.json — иначе это мёртвая ссылка на
+      # каждой пользовательской установке, не только у автора.
+      - name: Check CLAUDE.md platform-section links resolve (issue #291)
+        run: python3 scripts/check-claude-md-links.py --strict
 
       # CI-only check: MCP — серверы подключаются через claude.ai/settings/connectors
       - name: Check MCP documentation
@@ -345,6 +363,13 @@ jobs:
         run: bash scripts/check-setup-update-parity.sh
       - name: Check setup/update component-set parity
         run: bash scripts/check-component-parity.sh
+
+      # seed-снапшоты (WP-5 Ubuntu-audit, 2026-07-22 факт #3): script-promote.sh
+      # промотирует личный скрипт → scripts/, но НЕ пишет в seed/strategy/scripts/ —
+      # без этого гейта дрейф молчит, пока новый пользователь не упрётся в старый
+      # пайплайн (нашлось: day-open-pipeline.sh/scaffold.sh разошлись на сотни строк).
+      - name: Check seed snapshots match scripts/ (drift guard)
+        run: bash scripts/check-seed-drift.sh
 
       # 7. Только допустимые placeholders
       - name: Check placeholders are valid
